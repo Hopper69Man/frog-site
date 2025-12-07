@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ЛИ: Главная</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+  <body>
+
+    <!-- ШАПКА -->
+    <header>
+        <!-- кнопка лягушки игрушки -->
+            <div id="header-logo">
+                <a href="./index.html" id="logo-link">
+                    <img id="header-frog" src="./assets/images/header-frog.svg" width="50"; height="50";>
+                    <p id="header-text-frog">Лягушки<br>игрушки</p>
+                </a>
+            </div>
+        
+        <!-- кнопки сайтов -->
+        <div id="header-buttons">
+           <a href="./shop.html"><button class = "header-button btn btn-outline-light border-2"> Магазин </button></a>
+            <a href=""><button class = "header-button btn btn-outline-light border-2" disabled> Контакты </button></a>
+            <a href="./basket.html"><button class = "header-button btn btn-outline-light border-2"> Корзина </button></a>
+            <a href="./login.html"><button class = "header-button btn btn-light text-success"> Войти </button></a>
+        </div>
+    </header>
+
+
+<!-- ОСНОВНОЕ СОДЕРЖАНИЕ -->
+<div class="main-container">
+
+    <!-- КАРУСЕЛЬ - ПРЕЗЕНТАЦИЯ -->
+    <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+        <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+            <!-- Элемент 1 -->
+        <div class="carousel-item active">
+        <img src="./assets/images/HomeImg" class="d-block w-100" alt="Добро пожаловать">
+        <div class="carousel-caption d-none d-md-block">
+            <h5>Первый слайд</h5>
+            <p>Мелкое описание.</p>
+        </div>
+        </div>
+            <!-- Элемент 2 -->
+        <div class="carousel-item">
+        <img src="./assets/images/HomeImg" class="d-block w-100" alt="Мы крутые как наши игры">
+        <div class="carousel-caption d-none d-md-block">
+            <h5>Второй слайд</h5>
+            <p>Мелкое описание.</p>
+        </div>
+        </div>
+            <!-- Элемент 3 -->
+        <div class="carousel-item">
+        <img src="./assets/images/HomeImg" class="d-block w-100" alt="Зарегистрируйтесь и начните играть сейчас">
+        <div class="carousel-caption d-none d-md-block">
+            <h5>Третий слайд</h5>
+            <p>Мелкое описание.</p>
+        </div>
+        </div>
+    </div>
+
+    <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </a>
+
+    <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </a>
+    </div>
+
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  </body>
+</html>
+

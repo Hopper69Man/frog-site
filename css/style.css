@@ -1,0 +1,122 @@
+header{
+  height: 80px;
+  width: 100%;
+  background-color: #69893C;
+
+  padding-top: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.main-container{
+    display: flex;
+    justify-content: center;
+    padding-top: 2em;
+    padding-left: 2em;
+    padding-right: 2em;
+    width: 100%;
+    min-height: 48em;
+}
+
+footer{
+  display: flex;
+  justify-content: center;
+
+  height: 120px;
+  width: 100%;
+  background-color: #69893C;
+  padding-top: 1em, 1em, 1em;
+}
+
+#footer_content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#header-logo{
+ float: left;
+ display: flex;
+ flex-direction: row;
+}
+
+#logo-link {
+    display: flex;
+}
+
+#header-frog{
+    alt: "Лягушка";
+}
+#header-text-frog{
+    display: flex;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    width: 4em; 
+}
+
+#header-buttons{
+    float: right;
+}
+
+.header-button{
+    height: auto;
+    width: auto;
+    border-radius: 50px;
+}
+
+
+#cards-net{
+    display: flex;
+    flex-wrap: wrap; /* Это главное - позволяет переносу строк */
+    width: 100%;
+    justify-content: center; /* Центрируем карточки */
+    gap: 1em; /* Отступы между карточками */
+}
+
+.card{
+    margin: 0.35em;
+    min-width: 18em; /* Уменьшаем немного */
+    max-width: 18em;
+    min-height: 25em; /* Увеличиваем высоту для контента */
+    max-height: none; /* Убираем максимальную высоту */
+    flex-shrink: 0; /* Не даем сжиматься */ 
+}
+
+.btn-primary{
+    margin-top: 2em;
+    background-color: #69893C;
+    border-color: #69893C;
+}
+
+/* Все активные состояния */
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: #5a7733;
+    border-color: #5a7733;
+}
+
+/* Заблокированное состояние (опционально) */
+.btn-primary:disabled {
+    background-color: #69893C;
+    border-color: #69893C;
+    opacity: 0.65;
+}
+
+#login-container{
+    background-color: #CCCCCC;
+    height: 40em;
+    width: 35em;
+    border-radius: 15%;
+    padding: 1em;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#text_none_style{
+  text-decoration: none; /* Убирает подчеркивание */
+  color: #333; /* Меняет синий цвет (например, на темно-серый) */
+}
