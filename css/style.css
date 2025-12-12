@@ -75,9 +75,9 @@ footer{
 
 .card{
     margin: 0.35em;
-    min-width: 18em; /* Уменьшаем немного */
-    max-width: 18em;
-    min-height: 25em; /* Увеличиваем высоту для контента */
+    min-width: 20em; /* Уменьшаем немного */
+    max-width: 25em;
+    min-height: 18em; /* Увеличиваем высоту для контента */
     max-height: none; /* Убираем максимальную высоту */
     flex-shrink: 0; /* Не даем сжиматься */ 
 }

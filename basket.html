@@ -6,6 +6,7 @@
     <title>ЛИ: Магазин2</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" type="image/png" href="./assets/favicon.ico">
 </head>
   <body>
     <header>
@@ -22,14 +23,125 @@
         <div id="header-buttons">
            <a href="./shop.html"><button class = "header-button btn btn-outline-light border-2"> Магазин </button></a>
             <a href=""><button class = "header-button btn btn-outline-light border-2" disabled> Контакты </button></a>
-            <a href="./basket.html"><button class = "header-button btn btn-outline-light border-2"> Корзина </button></a>
-            <a href="./login.html"><button class = "header-button btn btn-light text-success"> Войти </button></a>
+           <a href="./basket.html" class="position-relative">
+    <button class="header-button btn btn-outline-light border-2">
+        🛒 Корзина
+        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+            0
+        </span>
+    </button>
+</a>
+            <a href="./login.html" id="login-logout-link"><button class="header-button btn btn-light text-success"> Войти </button></a>
         </div>
   
     </header>
 
 <!-- ОСНОВНОЕ СОДЕРЖАНИЕ -->
-<div class="main-container"></div>
+  <div class="main-container">
+  <div class="container py-4">
+    
+    <!-- Заголовок -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="text-success">
+        🛒 Корзина покупок
+      </h1>
+      <div>
+        <span id="cart-total-items" class="badge bg-primary fs-6">0 товаров</span>
+      </div>
+    </div>
+    
+    <!-- Проверка авторизации -->
+    <div id="auth-warning" class="alert alert-warning d-none">
+      <strong>⚠️ Внимание!</strong> Вы не авторизованы. 
+      <a href="./login.html" class="alert-link">Войдите</a>, чтобы сохранить корзину.
+    </div>
+    
+    <!-- Контейнер корзины -->
+    <div class="row">
+      <!-- Список товаров -->
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">Выбранные товары</h5>
+          </div>
+          <div class="card-body">
+            <div id="cart-items-container">
+              <!-- Товары будут загружены сюда -->
+              <div class="text-center py-5">
+                <div class="spinner-border text-success" role="status">
+                  <span class="visually-hidden">Загрузка...</span>
+                </div>
+                <p class="mt-2">Загружаем корзину...</p>
+              </div>
+            </div>
+            
+            <!-- Пустая корзина -->
+            <div id="empty-cart" class="text-center py-5 d-none">
+              <div class="mb-3">
+                <img src="./assets/images/header-frog.svg" width="80" height="80" class="opacity-50">
+              </div>
+              <h4 class="text-muted">Корзина пуста</h4>
+              <p class="text-muted">Добавьте товары из магазина</p>
+              <a href="./shop.html" class="btn btn-success">🛍️ Перейти в магазин</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Итого и оформление -->
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">Итого</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-2">
+                <span>Товары:</span>
+                <span id="cart-items-price">0 ₽</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Доставка:</span>
+                <span id="cart-delivery">Бесплатно</span>
+              </div>
+              <hr>
+              <div class="d-flex justify-content-between fw-bold fs-5">
+                <span>К оплате:</span>
+                <span id="cart-total-price" class="text-success">0 ₽</span>
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button id="checkout-btn" class="btn btn-success btn-lg" disabled>
+                💳 Оформить заказ
+              </button>
+              <button id="clear-cart-btn" class="btn btn-outline-danger">
+                🗑️ Очистить корзину
+              </button>
+              <a href="./shop.html" class="btn btn-outline-secondary">
+                ← Продолжить покупки
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Информация о доставке -->
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title">📦 Информация о доставке</h6>
+            <ul class="small text-muted mb-0">
+              <li>Бесплатная доставка от 3000 ₽</li>
+              <li>Срок доставки: 3-5 дней</li>
+              <li>Оплата при получении</li>
+              <li>Возврат в течение 14 дней</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 <footer>
@@ -45,6 +157,8 @@
 </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="/js/auth-header.js"></script>
+    <script src="/js/basket.js"></script>
   </body>
 </html>
 

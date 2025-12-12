@@ -23,8 +23,15 @@
         <div id="header-buttons">
             <a href="./shop.html"><button class = "header-button btn btn-outline-light border-2"> Магазин </button></a>
             <a href=""><button class = "header-button btn btn-outline-light border-2" disabled> Контакты </button></a>
-            <a href="./basket.html"><button class = "header-button btn btn-outline-light border-2"> Корзина </button></a>
-            <a href="./login.html"><button class = "header-button btn btn-light text-success"> Войти </button></a>
+           <a href="./basket.html" class="position-relative">
+    <button class="header-button btn btn-outline-light border-2">
+        🛒 Корзина
+        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+            0
+        </span>
+    </button>
+</a>
+            <a href="./login.html" id="login-logout-link"><button class="header-button btn btn-light text-success"> Войти </button></a>
         </div>
     </header>
 
@@ -49,7 +56,7 @@
       </div>
       
       <div>
-        <a href="#" class="btn btn-primary">Вход</a>
+        <button type="button" class="btn btn-primary" id="doLoginButton">Вход</button>
       </div>
 
     </div>
@@ -70,7 +77,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     
-    <script src="check-ivent.js"></script>
-
+    <script src="/js/log-reg.js"></script>
+    <script src="/js/auth-header.js"></script>
   </body>
 </html>
