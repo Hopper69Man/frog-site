@@ -1,0 +1,2684 @@
+# 🐸 Frog Site - Полная документация проекта
+
+*Документация создана: 13.12.2025 00:12:57*
+*Путь к проекту: `/home/hopper-main/frog-site`*
+
+## 📋 Оглавление
+1. [HTML файлы](#html-файлы)
+2. [CSS файлы](#css-файлы)
+3. [JavaScript файлы](#javascript-файлы)
+4. [База данных](#база-данных)
+5. [Структура проекта](#структура-проекта)
+6. [Статистика](#статистика)
+
+---
+
+## 📄 HTML файлы
+
+### 1. `404.html`
+**Расположение:** `404.html`
+
+**Назначение:** Страница ошибки 404 (не найдено)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+```
+
+---
+
+### 2. `basket.html`
+**Расположение:** `basket.html`
+
+**Назначение:** Страница корзины покупок
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ЛИ: Магазин2</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" type="image/png" href="./assets/favicon.ico">
+</head>
+  <body>
+    <header>
+
+        <!-- кнопка лягушки игрушки -->
+            <div id="header-logo">
+                <a href="./index.html" id="logo-link">
+                    <img id="header-frog" src="./assets/images/header-frog.svg" width="50"; height="50";>
+                    <p id="header-text-frog">Лягушки<br>игрушки</p>
+                </a>
+            </div>
+ 
+        <!-- кнопки сайтов -->
+        <div id="header-buttons">
+           <a href="./shop.html"><button class = "header-button btn btn-outline-light border-2"> Магазин </button></a>
+            <a href=""><button class = "header-button btn btn-outline-light border-2" disabled> Контакты </button></a>
+           <a href="./basket.html" class="position-relative">
+    <button class="header-button btn btn-outline-light border-2">
+        🛒 Корзина
+        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+            0
+        </span>
+    </button>
+</a>
+            <a href="./login.html" id="login-logout-link"><button class="header-button btn btn-light text-success"> Войти </button></a>
+        </div>
+  
+    </header>
+
+<!-- ОСНОВНОЕ СОДЕРЖАНИЕ -->
+  <div class="main-container">
+  <div class="container py-4">
+    
+    <!-- Заголовок -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="text-success">
+        🛒 Корзина покупок
+      </h1>
+      <div>
+        <span id="cart-total-items" class="badge bg-primary fs-6">0 товаров</span>
+      </div>
+    </div>
+    
+    <!-- Проверка авторизации -->
+    <div id="auth-warning" class="alert alert-warning d-none">
+      <strong>⚠️ Внимание!</strong> Вы не авторизованы. 
+      <a href="./login.html" class="alert-link">Войдите</a>, чтобы сохранить корзину.
+    </div>
+    
+    <!-- Контейнер корзины -->
+    <div class="row">
+      <!-- Список товаров -->
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">Выбранные товары</h5>
+          </div>
+          <div class="card-body">
+            <div id="cart-items-container">
+              <!-- Товары будут загружены сюда -->
+              <div class="text-center py-5">
+                <div class="spinner-border text-success" role="status">
+                  <span class="visually-hidden">Загрузка...</span>
+                </div>
+                <p class="mt-2">Загружаем корзину...</p>
+              </div>
+            </div>
+            
+            <!-- Пустая корзина -->
+            <div id="empty-cart" class="text-center py-5 d-none">
+              <div class="mb-3">
+                <img src="./assets/images/header-frog.svg" width="80" height="80" class="opacity-50">
+              </div>
+              <h4 class="text-muted">Корзина пуста</h4>
+              <p class="text-muted">Добавьте товары из магазина</p>
+              <a href="./shop.html" class="btn btn-success">🛍️ Перейти в магазин</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Итого и оформление -->
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">Итого</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-2">
+                <span>Товары:</span>
+                <span id="cart-items-price">0 ₽</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Доставка:</span>
+                <span id="cart-delivery">Бесплатно</span>
+              </div>
+              <hr>
+              <div class="d-flex justify-content-between fw-bold fs-5">
+                <span>К оплате:</span>
+                <span id="cart-total-price" class="text-success">0 ₽</span>
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button id="checkout-btn" class="btn btn-success btn-lg" disabled>
+                💳 Оформить заказ
+              </button>
+              <button id="clear-cart-btn" class="btn btn-outline-danger">
+                🗑️ Очистить корзину
+              </button>
+              <a href="./shop.html" class="btn btn-outline-secondary">
+                ← Продолжить покупки
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Информация о доставке -->
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title">📦 Информация о доставке</h6>
+            <ul class="small text-muted mb-0">
+              <li>Бесплатная доставка от 3000 ₽</li>
+              <li>Срок доставки: 3-5 дней</li>
+              <li>Оплата при получении</li>
+              <li>Возврат в течение 14 дней</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<footer>
+  <div id="footer_content">
+    <h3> Контакты</h3>
+    <h6> Почта: 
+      <a id="text_none_style" href="mailto:email@example.com">
+        photiclickbruh@vk.com</a></h6>
+    <h6> Группа: 
+      <a id="text_none_style" href="https://npi-tu.ru/schedule/schedule.html?for=student&faculty=2&year=3&group=%D0%98%D0%A1%D0%A2%D0%B0">
+        090302-ИСТа-о23</a></h6>
+  </div>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="/js/auth-header.js"></script>
+    <script src="/js/basket.js"></script>
+  </body>
+</html>
+
+```
+
+---
+
+### 3. `index.html`
+**Расположение:** `index.html`
+
+**Назначение:** Главная страница сайта
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ЛИ: Главная</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" type="image/png" href="./assets/favicon.ico">
+</head>
+
+  <body>
+
+    <!-- ШАПКА -->
+    <header>
+        <!-- кнопка лягушки игрушки -->
+            <div id="header-logo">
+                <a href="./index.html" id="logo-link">
+                    <img id="header-frog" src="./assets/images/header-frog.svg" width="50"; height="50";>
+                    <p id="header-text-frog">Лягушки<br>игрушки</p>
+                </a>
+            </div>
+        
+        <!-- кнопки сайтов -->
+        <div id="header-buttons">
+           <a href="./shop.html"><button class = "header-button btn btn-outline-light border-2"> Магазин </button></a>
+            <a href=""><button class = "header-button btn btn-outline-light border-2" disabled> Контакты </button></a>
+           <a href="./basket.html" class="position-relative">
+    <button class="header-button btn btn-outline-light border-2">
+        🛒 Корзина
+        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+            0
+        </span>
+    </button>
+</a>
+             <a href="./login.html" id="login-logout-link"><button class="header-button btn btn-light text-success"> Войти </button></a>
+        </div>
+    </header>
+
+
+<!-- ОСНОВНОЕ СОДЕРЖАНИЕ -->
+<div class="main-container">
+
+    <!-- КАРУСЕЛЬ - ПРЕЗЕНТАЦИЯ -->
+    <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+        <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+            <!-- Элемент 1 -->
+        <div class="carousel-item active">
+        <img src="./assets/images/HomeImg" class="d-block w-100" alt="Добро пожаловать">
+        <div class="carousel-caption d-none d-md-block">
+            <h5>Первый слайд</h5>
+            <p>Мелкое описание.</p>
+        </div>
+        </div>
+            <!-- Элемент 2 -->
+        <div class="carousel-item">
+        <img src="./assets/images/HomeImg" class="d-block w-100" alt="Мы крутые как наши игры">
+        <div class="carousel-caption d-none d-md-block">
+            <h5>Второй слайд</h5>
+            <p>Мелкое описание.</p>
+        </div>
+        </div>
+            <!-- Элемент 3 -->
+        <div class="carousel-item">
+        <img src="./assets/images/HomeImg" class="d-block w-100" alt="Зарегистрируйтесь и начните играть сейчас">
+        <div class="carousel-caption d-none d-md-block">
+            <h5>Третий слайд</h5>
+            <p>Мелкое описание.</p>
+        </div>
+        </div>
+    </div>
+
+    <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </a>
+
+    <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </a>
+    </div>
+
+</div>
+
+
+<footer>
+  <div id="footer_content">
+    <h3> Контакты</h3>
+    <h6> Почта: 
+      <a id="text_none_style" href="mailto:email@example.com">
+        photiclickbruh@vk.com</a></h6>
+    <h6> Группа: 
+      <a id="text_none_style" href="https://npi-tu.ru/schedule/schedule.html?for=student&faculty=2&year=3&group=%D0%98%D0%A1%D0%A2%D0%B0">
+        090302-ИСТа-о23</a></h6>
+  </div>
+</footer>
+
+
+    <script src="/js/backend.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="/js/auth-header.js"></script>
+  </body>
+</html>
+
+```
+
+---
+
+### 4. `login.html`
+**Расположение:** `login.html`
+
+**Назначение:** Страница входа в аккаунт
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ЛИ: Войти</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" type="image/png" href="./assets/favicon.ico">
+  
+</head>
+  <body>
+    <header>
+        <!-- кнопка лягушки игрушки -->
+            <div id="header-logo">
+                <a href="./index.html" id="logo-link">
+                    <img id="header-frog" src="./assets/images/header-frog.svg" width="50"; height="50";>
+                    <p id="header-text-frog">Лягушки<br>игрушки</p>
+                </a>
+            </div>
+        
+        <!-- кнопки сайтов -->
+        <div id="header-buttons">
+            <a href="./shop.html"><button class = "header-button btn btn-outline-light border-2"> Магазин </button></a>
+            <a href=""><button class = "header-button btn btn-outline-light border-2" disabled> Контакты </button></a>
+           <a href="./basket.html" class="position-relative">
+    <button class="header-button btn btn-outline-light border-2">
+        🛒 Корзина
+        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+            0
+        </span>
+    </button>
+</a>
+            <a href="./login.html" id="login-logout-link"><button class="header-button btn btn-light text-success"> Войти </button></a>
+        </div>
+    </header>
+
+  <!-- ОСНОВНОЕ СОДЕРЖАНИЕ -->  
+  <div class="main-container">
+  
+    <!-- ФОРМА ВХОДА -->
+    <div id="login-container">
+
+      <div>
+        <h1 style="margin-bottom: 1em">Вход</h1>
+      </div>
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Почта</label>
+        <input type="email" class="form-control" id="inputMail" placeholder="your-name@mail.com">
+      </div>
+      
+      <div class="mb-3">
+        <label for="exampleFormControlInput2" class="form-label">Пароль</label>
+        <input type="password" class="form-control" id="inputPassword" placeholder="*Сложный пароль*">
+        <a href="./register.html">Зарегистрироваться</a>
+      </div>
+      
+      <div>
+        <button type="button" class="btn btn-primary" id="doLoginButton">Вход</button>
+      </div>
+
+    </div>
+
+  </div>
+
+<footer>
+  <div id="footer_content">
+    <h3> Контакты</h3>
+    <h6> Почта: 
+      <a id="text_none_style" href="mailto:email@example.com">
+        photiclickbruh@vk.com</a></h6>
+    <h6> Группа: 
+      <a id="text_none_style" href="https://npi-tu.ru/schedule/schedule.html?for=student&faculty=2&year=3&group=%D0%98%D0%A1%D0%A2%D0%B0">
+        090302-ИСТа-о23</a></h6>
+  </div>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    
+    <script src="/js/log-reg.js"></script>
+    <script src="/js/auth-header.js"></script>
+  </body>
+</html>
+```
+
+---
+
+### 5. `register.html`
+**Расположение:** `register.html`
+
+**Назначение:** Страница регистрации нового пользователя
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ЛИ: Войти</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" type="image/png" href="./assets/favicon.ico">
+</head>
+  <body>
+    <header>
+        <!-- кнопка лягушки игрушки -->
+            <div id="header-logo">
+                <a href="./index.html" id="logo-link">
+                    <img id="header-frog" src="./assets/images/header-frog.svg" width="50"; height="50";>
+                    <p id="header-text-frog">Лягушки<br>игрушки</p>
+                </a>
+            </div>
+        
+        <!-- кнопки сайтов -->
+        <div id="header-buttons">
+            <a href="./shop.html"><button class = "header-button btn btn-outline-light border-2"> Магазин </button></a>
+            <a href=""><button class = "header-button btn btn-outline-light border-2" disabled> Контакты </button></a>
+           <a href="./basket.html" class="position-relative">
+    <button class="header-button btn btn-outline-light border-2">
+        🛒 Корзина
+        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+            0
+        </span>
+    </button>
+</a>
+            <a href="./login.html" id="login-logout-link"><button class="header-button btn btn-light text-success"> Войти </button></a>
+        </div>
+    </header>
+
+  <!-- ОСНОВНОЕ СОДЕРЖАНИЕ -->  
+  <div class="main-container">
+  
+    <!-- ФОРМА ВХОДА -->
+    <div id="login-container">
+
+      <div>
+        <h1 style="margin-bottom: 1em">Регистрация</h1>
+      </div>
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Почта</label>
+        <input type="email" class="form-control" id="inputMail" placeholder="your-name@mail.com">
+      </div>
+      
+      <div class="mb-3">
+        <label for="exampleFormControlInput2" class="form-label">Пароль</label>
+        <input type="password" class="form-control" id="inputPassword" placeholder="*Сложный пароль*">
+        <input type="password" class="form-control" id="checkPassword" placeholder="Подтвердите пароль">
+      </div>
+      
+      <div>
+        <button type="button" class="btn btn-success" id="doRegButton">Зарегистрироваться</button>
+      </div>
+
+
+    </div>
+
+  </div>
+
+<footer>
+  <div id="footer_content">
+    <h3> Контакты</h3>
+    <h6> Почта: 
+      <a id="text_none_style" href="mailto:email@example.com">
+        photiclickbruh@vk.com</a></h6>
+    <h6> Группа: 
+      <a id="text_none_style" href="https://npi-tu.ru/schedule/schedule.html?for=student&faculty=2&year=3&group=%D0%98%D0%A1%D0%A2%D0%B0">
+        090302-ИСТа-о23</a></h6>
+  </div>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="/js/log-reg.js"></script>
+    <script src="/js/auth-header.js"></script>
+  </body>
+</html>
+```
+
+---
+
+### 6. `shop.html`
+**Расположение:** `shop.html`
+
+**Назначение:** Страница магазина с товарами
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ЛИ: Магазин</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" type="image/png" href="./assets/favicon.ico">
+</head>
+ 
+<body>
+
+    <header>
+        <!-- кнопка лягушки игрушки -->
+    <div id="header-logo">
+    <a href="./index.html" id="logo-link">
+        <img id="header-frog" src="./assets/images/header-frog.svg" width="50"; height="50";>
+        <p id="header-text-frog">Лягушки<br>игрушки</p>
+    </a>
+    </div>
+        
+        <!-- кнопки сайтов -->
+    <div id="header-buttons">
+        <a href="./shop.html"><button class = "header-button btn btn-outline-light border-2"> Магазин </button></a>
+        <a href=""><button class = "header-button btn btn-outline-light border-2" disabled> Контакты </button></a>
+       <a href="./basket.html" class="position-relative">
+    <button class="header-button btn btn-outline-light border-2">
+        🛒 Корзина
+        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+            0
+        </span>
+    </button>
+</a>
+        <a href="./login.html" id="login-logout-link"><button class="header-button btn btn-light text-success"> Войти </button></a>
+    </div>
+    
+  </header>
+
+
+
+<!-- ОСНОВНОЕ СОДЕРЖАНИЕ -->
+<div class="main-container">
+  <!-- СЕТКА КАРТОЧЕК -->
+  <div id="cards-net">
+  </div>
+  
+</div>
+
+
+<footer>
+  <div id="footer_content">
+    <h3> Контакты</h3>
+    <h6> Почта: 
+      <a id="text_none_style" href="mailto:email@example.com">
+        photiclickbruh@vk.com</a></h6>
+    <h6> Группа: 
+      <a id="text_none_style" href="https://npi-tu.ru/schedule/schedule.html?for=student&faculty=2&year=3&group=%D0%98%D0%A1%D0%A2%D0%B0">
+        090302-ИСТа-о23</a></h6>
+  </div>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="/js/shop.js"></script>
+    <script src="/js/auth-header.js"></script>
+  </body>
+</html>
+
+```
+
+---
+
+## 🎨 CSS файлы
+
+### 1. `style.css`
+**Расположение:** `css/style.css`
+
+**Назначение:** Основные стили всего сайта
+
+```css
+header{
+  height: 80px;
+  width: 100%;
+  background-color: #69893C;
+
+  padding-top: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.main-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2em;
+    padding-left: 2em;
+    padding-right: 2em;
+    width: 100%;
+    min-height: 48em;
+}
+
+footer{
+  display: flex;
+  justify-content: center;
+
+  height: 120px;
+  width: 100%;
+  background-color: #69893C;
+  padding-top: 1em, 1em, 1em;
+}
+
+#footer_content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#header-logo{
+ float: left;
+ display: flex;
+ flex-direction: row;
+}
+
+#logo-link {
+    display: flex;
+}
+
+#header-frog{
+    alt: "Лягушка";
+}
+#header-text-frog{
+    display: flex;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    width: 4em; 
+}
+
+#header-buttons{
+    float: right;
+}
+
+.header-button{
+    height: auto;
+    width: auto;
+    border-radius: 50px;
+}
+
+
+#cards-net{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    justify-items: center; /* Центрируем карточки в ячейках */
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1200px; /* Ограничиваем максимальную ширину */
+    margin: 0 auto; /* Центрируем всю сетку */
+    padding: 1rem;
+}
+
+.card{
+    width: 100%;
+    max-width: 280px; /* Максимальная ширина карточки */
+    height: auto;
+    transition: all 0.3s ease;
+}
+
+.btn-primary{
+    margin-top: 2em;
+    background-color: #69893C;
+    border-color: #69893C;
+}
+
+/* Все активные состояния */
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: #5a7733;
+    border-color: #5a7733;
+}
+
+/* Заблокированное состояние (опционально) */
+.btn-primary:disabled {
+    background-color: #69893C;
+    border-color: #69893C;
+    opacity: 0.65;
+}
+
+#login-container{
+    background-color: #CCCCCC;
+    height: 40em;
+    width: 35em;
+    border-radius: 15%;
+    padding: 1em;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#text_none_style{
+  text-decoration: none; /* Убирает подчеркивание */
+  color: #333; /* 
+  Меняет синий цвет (например, на темно-серый) */
+}
+
+
+/* Пагинация */
+.pagination-container {
+    width: 100%;
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #69893C;
+    border-color: #69893C;
+    color: white;
+}
+
+.pagination .page-link {
+    color: #69893C;
+    cursor: pointer;
+}
+
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    color: #5a7733;
+}
+
+/* Панель админа */
+.admin-panel {
+    max-width: 1200px;
+    margin: 0 auto 2rem auto;
+    width: 100%;
+}
+
+.admin-panel:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Модальные окна */
+.modal-content {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Карточки товаров */
+.card {
+    flex: 0 0 auto; /* Не даем растягиваться */
+    width: 280px; /* Фиксированная ширина */
+    margin: 0.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+/* Кнопки управления */
+.btn-group .btn {
+    border-radius: 5px !important;
+}
+
+.btn-outline-warning {
+    color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-outline-warning:hover {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+```
+
+---
+
+## ⚡ JavaScript файлы
+
+### 1. `auth-header.js`
+**Расположение:** `js/auth-header.js`
+
+**Назначение:** Логика авторизации в шапке сайта
+
+```javascript
+// auth-header.js - управление кнопкой Войти/Выйти
+document.addEventListener('DOMContentLoaded', function() {
+    updateLoginButton();
+    updateCartCount();
+});
+
+function updateLoginButton() {
+    const loginLink = document.getElementById('login-logout-link');
+    if (!loginLink) return;
+    
+    const user = JSON.parse(localStorage.getItem('user'));
+    
+    if (user) {
+        // Пользователь вошел - меняем на "Выйти"
+        loginLink.href = 'javascript:void(0)';
+        loginLink.onclick = logout;
+        
+        const button = loginLink.querySelector('button');
+        if (button) {
+            button.innerHTML = '🚪 Выйти';
+            button.className = 'header-button btn btn-outline-danger';
+        }
+        
+        // Добавляем информацию о пользователе рядом
+        const userInfo = document.createElement('span');
+        userInfo.className = 'text-light ms-2';
+        userInfo.innerHTML = `👋 ${user.login}`;
+        loginLink.parentNode.insertBefore(userInfo, loginLink.nextSibling);
+        
+    } else {
+        const button = loginLink.querySelector('button');
+        if (button) {
+            button.innerHTML = 'Войти';
+            button.className = 'header-button btn btn-light text-success';
+        }
+    }
+}
+
+function logout() {
+    if (confirm('Вы уверены, что хотите выйти?')) {
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (user) {
+            const oldCart = localStorage.getItem('cart');
+            if (oldCart) {
+                sessionStorage.setItem(`old_cart_${user.id}`, oldCart);
+            }
+        }
+        
+        localStorage.clear();
+        
+        alert('Вы успешно вышли');
+        location.reload();
+    }
+}
+
+// Функция обновления счетчика корзины
+function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const cartCountElement = document.querySelector('#cart-count');
+    
+    if (cartCountElement && cart.length > 0) {
+        cartCountElement.textContent = cart.length;
+        cartCountElement.classList.remove('d-none');
+    } else if (cartCountElement) {
+        cartCountElement.classList.add('d-none');
+    }
+}
+```
+
+---
+
+### 2. `backend.js`
+**Расположение:** `js/backend.js`
+
+**Назначение:** Функции для работы с базой данных
+
+```javascript
+const express = require('express');     // 1. Библиотека для сервера
+const cors = require('cors');           // 2. Библиотека для разрешения запросов
+const app = express();                  // 3. Создаем приложение
+app.use(cors());                        // 4. Разрешаем запросы с браузера
+app.use(express.json());                // 5. Умеем читать JSON
+const PORT = 3000;                      // 6. Будем слушать порт 3000
+
+
+const Database = require('better-sqlite3');
+
+const db = new Database('./database.db', {verbose: console.log});
+
+const tables = db.prepare(`
+    SELECT name FROM sqlite_master
+    WHERE type = 'table'
+    `).all()
+
+function testDB(){
+
+  console.log('\n=== ТАБЛИЦЫ В БАЗЕ ДАННЫХ ===');
+  console.log(`Найдено таблиц: ${tables.length}`);
+
+  tables.forEach((table, index) => {
+    console.log(`${index + 1}. ${table.name}`);
+  });
+
+  console.log(` Всего таблиц: ${tables.length}`);
+
+  // 2. Для каждой таблицы показываем структуру и данные
+  tables.forEach((table, index) => {
+    console.log(`\n${index + 1}. ТАБЛИЦА: ${table.name}, \n`);
+    
+    // Получаем информацию о колонках
+    try {
+
+      const columns = db.prepare(`PRAGMA table_info('${table.name}')`).all();
+      console.log('\n   Структура:');
+      columns.forEach(col => {
+        console.log(`     - ${col.name} (${col.type}) ${col.pk ? 'PRIMARY KEY' : ''}`);
+      });
+      
+      const data = db.prepare(`SELECT * FROM '${table.name}'`).all();
+      if (data.length > 0) {
+        console.log('\nзаписи:\n');
+
+        data.forEach(row => {
+          console.log('     ', row);
+        });
+        
+        const count = db.prepare(`SELECT COUNT(*) as total FROM '${table.name}'`).get();
+        console.log(`   Всего записей: ${count.total}, \n`);
+
+      } else {
+        console.log('   (таблица пустая)');
+      }
+      
+    } catch (error) {
+      console.log('   (ошибка чтения таблицы):', error.message);
+    }
+  });
+}
+
+// Авторизация пользователя
+function autorithation(username, password){
+  const user = db.prepare(`SELECT * FROM 'User' WHERE login = ? AND password = ?`)
+    .get(username, password);
+    return user;
+}
+
+// Получить игры пользователя
+function checkUserGame(userId){
+
+  try {
+    // Сначала проверяем существует ли пользователь
+    const user = db.prepare(`SELECT * FROM 'User' WHERE id = ?`).get(userId);
+    
+    if (!user) {
+      console.log(`??? Пользователь с ID ${userId} не существует в таблице User`);
+      return { success: false, error: 'User not found' };
+    }
+    
+    console.log(`!!! Пользователь найден: ${user.login} (${user.role})`);
+    
+    // Ищем его игры
+    const userGames = db.prepare(`
+      SELECT * FROM 'game' 
+      WHERE id_user = ? 
+      ORDER BY cost DESC
+    `).all(userId);
+    
+    if (userGames.length === 0) {
+      console.log(`У пользователя ${user.login} (ID: ${userId}) нет игр`);
+      return { success: true, games: [], message: 'No games found' };
+    }
+    
+    console.log(`!!! Игры пользователя ${user.login}: ${userGames.length} шт.`);
+    userGames.forEach(game => {
+      console.log(`   - ${game.name}: ${game.cost} руб.`);
+    });
+    
+    return { success: true, games: userGames };
+    
+  } catch (error) {
+    console.log('ХХХ Ошибка:', error.message);
+    return { success: false, error: error.message };
+  }  
+}
+
+// API для входа (использует функцию autorithation)
+app.post('/api/login', (req, res) => {
+    console.log('🔐 Получен запрос на вход:', req.body);
+    
+    const { username, password } = req.body;
+    const user = autorithation(username, password);
+    
+    if (user) {
+        console.log('✅ Пользователь найден:', user.login);
+        res.json({ 
+            success: true, 
+            user: { 
+                id: user.id, 
+                login: user.login, 
+                role: user.role 
+            }
+        });
+    } else {
+        console.log('❌ Пользователь не найден');
+        res.status(401).json({ 
+            success: false, 
+            error: 'Неверный логин или пароль' 
+        });
+    }
+});
+
+// API для регистрации (использует функцию addUser)
+app.post('/api/register', (req, res) => {
+    console.log('📝 Получен запрос на регистрацию:', req.body);
+    
+    const { username, password } = req.body;
+    const result = addUser(username, password);
+    
+    if (result.success) {
+        console.log('✅ Пользователь добавлен');
+        res.json({ 
+            success: true, 
+            userId: result.userId,
+            message: 'Регистрация успешна!' 
+        });
+    } else {
+        console.log('❌ Ошибка при регистрации');
+        res.status(400).json({ 
+            success: false, 
+            error: result.error 
+        });
+    }
+});
+
+// Запускаем сервер
+app.listen(PORT, () => {
+    console.log(`Сервер запущен на http://localhost:${PORT}`);
+    console.log(`Для входа: POST http://localhost:${PORT}/api/login`);
+    console.log(`Для регистрации: POST http://localhost:${PORT}/api/register`);
+});
+
+// testDB()
+// checkUserGame(userId)
+
+db.close();
+```
+
+---
+
+### 3. `basket.js`
+**Расположение:** `js/basket.js`
+
+**Назначение:** Логика работы корзины покупок
+
+```javascript
+// basket.js - логика корзины
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🛒 Страница корзины загружена');
+    
+    const API_URL = 'http://localhost:3000/api';
+    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+    
+    // Элементы DOM
+    const cartItemsContainer = document.getElementById('cart-items-container');
+    const emptyCartElement = document.getElementById('empty-cart');
+    const authWarning = document.getElementById('auth-warning');
+    const cartTotalItems = document.getElementById('cart-total-items');
+    const cartItemsPrice = document.getElementById('cart-items-price');
+    const cartTotalPrice = document.getElementById('cart-total-price');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const clearCartBtn = document.getElementById('clear-cart-btn');
+    
+    // Показываем предупреждение если не авторизован
+    if (!currentUser && authWarning) {
+        authWarning.classList.remove('d-none');
+    }
+    
+    // Загружаем корзину
+    loadCart();
+    
+    // Обработчики кнопок
+    if (clearCartBtn) {
+        clearCartBtn.addEventListener('click', clearCart);
+    }
+    
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', checkout);
+    }
+    
+    // Функция загрузки корзины
+    async function loadCart() {
+        try {
+            // Получаем ID игр из корзины
+            const cart = getCart();
+            
+            if (cart.length === 0) {
+                showEmptyCart();
+                updateCartSummary(0, 0);
+                return;
+            }
+            
+            console.log(`📥 Загружаю ${cart.length} игр из корзины...`);
+            
+            // Показываем загрузку
+            cartItemsContainer.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Загрузка...</span>
+                    </div>
+                    <p class="mt-2">Загружаем товары...</p>
+                </div>
+            `;
+            
+            // Загружаем информацию о каждой игре
+            const gamesPromises = cart.map(gameId => getGameInfo(gameId));
+            const gamesResults = await Promise.allSettled(gamesPromises);
+            
+            // Фильтруем успешно загруженные игры
+            const games = gamesResults
+                .filter(result => result.status === 'fulfilled' && result.value)
+                .map(result => result.value);
+            
+            console.log(`✅ Успешно загружено ${games.length} игр`);
+            
+            // Если все игры не найдены
+            if (games.length === 0) {
+                showEmptyCart();
+                updateCartSummary(0, 0);
+                return;
+            }
+            
+            // Показываем игры
+            displayCartItems(games);
+            
+            // Обновляем итоги
+            const totalPrice = calculateTotalPrice(games);
+            updateCartSummary(games.length, totalPrice);
+            
+        } catch (error) {
+            console.error('❌ Ошибка загрузки корзины:', error);
+            cartItemsContainer.innerHTML = `
+                <div class="alert alert-danger">
+                    <h5>Ошибка загрузки корзины</h5>
+                    <p>${error.message}</p>
+                    <button onclick="location.reload()" class="btn btn-sm btn-outline-danger">
+                        Обновить страницу
+                    </button>
+                </div>
+            `;
+        }
+    }
+    
+    // Функция получения информации об игре
+    async function getGameInfo(gameId) {
+        try {
+            const response = await fetch(`${API_URL}/games/${gameId}`);
+            
+            if (!response.ok) {
+                if (response.status === 404) {
+                    console.warn(`⚠️ Игра ID ${gameId} не найдена, удаляю из корзины`);
+                    removeFromCart(gameId);
+                }
+                return null;
+            }
+            
+            const data = await response.json();
+            return data.game;
+            
+        } catch (error) {
+            console.error(`❌ Ошибка загрузки игры ${gameId}:`, error);
+            return null;
+        }
+    }
+    
+    // Функция отображения товаров в корзине
+    function displayCartItems(games) {
+        if (games.length === 0) {
+            showEmptyCart();
+            return;
+        }
+        
+        // Очищаем контейнер
+        cartItemsContainer.innerHTML = '';
+        
+        // Скрываем сообщение о пустой корзине
+        emptyCartElement.classList.add('d-none');
+        
+        // Создаем карточки для каждой игры
+        games.forEach(game => {
+            const cartItem = createCartItemElement(game);
+            cartItemsContainer.appendChild(cartItem);
+        });
+    }
+    
+    // Функция создания элемента товара в корзине
+    function createCartItemElement(game) {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cart-item border-bottom pb-3 mb-3';
+        itemDiv.dataset.gameId = game.id;
+        
+        // Форматируем цену
+        const formattedPrice = new Intl.NumberFormat('ru-RU', {
+            style: 'currency',
+            currency: 'RUB',
+            minimumFractionDigits: 0
+        }).format(game.cost);
+        
+        itemDiv.innerHTML = `
+            <div class="row align-items-center">
+                <!-- Изображение -->
+                <div class="col-3 col-md-2">
+                    <img src="./assets/images/cards/${game.picture || 'default-frog.jpg'}" 
+                         class="img-fluid rounded" 
+                         alt="${game.name}"
+                         style="height: 80px; object-fit: cover;"
+                         onerror="this.src='./assets/images/cards/default-frog.jpg'">
+                </div>
+                
+                <!-- Информация -->
+                <div class="col-6 col-md-7">
+                    <h6 class="mb-1">${game.name}</h6>
+                    <p class="text-muted small mb-1">
+                        ${game.description || 'Мягкая игрушка лягушка'}
+                    </p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-secondary me-2">ID: ${game.id}</span>
+                        <small class="text-muted">Владелец: ${game.owner_login || 'Неизвестно'}</small>
+                    </div>
+                </div>
+                
+                <!-- Цена и управление -->
+                <div class="col-3 col-md-3 text-end">
+                    <div class="mb-2">
+                        <span class="fw-bold text-success">${formattedPrice}</span>
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-danger remove-item-btn" 
+                                data-game-id="${game.id}"
+                                title="Удалить">
+                            ✕
+                        </button>
+                        <button class="btn btn-outline-secondary view-item-btn"
+                                onclick="window.open('./shop.html#game-${game.id}', '_blank')"
+                                title="Посмотреть">
+                            👁
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Добавляем обработчик для кнопки удаления
+        const removeBtn = itemDiv.querySelector('.remove-item-btn');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', function() {
+                const gameId = this.getAttribute('data-game-id');
+                removeCartItem(gameId, itemDiv);
+            });
+        }
+        
+        return itemDiv;
+    }
+    
+    // Функция удаления товара из корзины
+    function removeCartItem(gameId, element) {
+        if (!confirm('Удалить этот товар из корзины?')) {
+            return;
+        }
+        
+        // Удаляем из localStorage
+        removeFromCart(gameId);
+        
+        // Анимация удаления
+        if (element) {
+            element.style.opacity = '0.5';
+            element.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                element.remove();
+                
+                // Перезагружаем корзину
+                loadCart();
+                
+                // Показываем уведомление
+                showNotification('Товар удален из корзины', 'warning');
+                
+            }, 300);
+        }
+    }
+    
+    // Функция очистки всей корзины
+    function clearCart() {
+        const cart = getCart();
+        
+        if (cart.length === 0) {
+            alert('Корзина уже пуста!');
+            return;
+        }
+        
+        if (confirm(`Очистить всю корзину (${cart.length} товаров)?`)) {
+            localStorage.removeItem('cart');
+            
+            // Показываем пустую корзину
+            showEmptyCart();
+            updateCartSummary(0, 0);
+            
+            // Показываем уведомление
+            showNotification('Корзина очищена', 'success');
+            
+            // Обновляем счетчик в шапке
+            updateHeaderCartCount();
+        }
+    }
+    
+    // Функция оформления заказа
+    function checkout() {
+        const cart = getCart();
+        const currentUser = JSON.parse(localStorage.getItem('user'));
+        
+        if (cart.length === 0) {
+            alert('Корзина пуста!');
+            return;
+        }
+        
+        if (!currentUser) {
+            alert('Для оформления заказа необходимо войти в систему!');
+            window.location.href = './login.html';
+            return;
+        }
+        
+        // Здесь будет логика оформления заказа
+        const totalPrice = calculateTotalPriceFromCart();
+        
+        if (confirm(`Оформить заказ на сумму ${totalPrice} ₽?`)) {
+            // Имитация оформления заказа
+            checkoutBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Оформляем...';
+            checkoutBtn.disabled = true;
+            
+            setTimeout(() => {
+                // В реальном приложении здесь будет запрос к API
+                alert(`✅ Заказ оформлен!\nСумма: ${totalPrice} ₽\nТоваров: ${cart.length}\n\nС вами свяжутся для подтверждения.`);
+                
+                // Очищаем корзину после успешного оформления
+                localStorage.removeItem('cart');
+                showEmptyCart();
+                updateCartSummary(0, 0);
+                updateHeaderCartCount();
+                
+                // Возвращаем кнопку в исходное состояние
+                checkoutBtn.innerHTML = '💳 Оформить заказ';
+                checkoutBtn.disabled = false;
+                
+            }, 2000);
+        }
+    }
+    
+    // Функция показа пустой корзины
+    function showEmptyCart() {
+        cartItemsContainer.innerHTML = '';
+        emptyCartElement.classList.remove('d-none');
+        checkoutBtn.disabled = true;
+    }
+    
+    // Функция обновления итогов
+    function updateCartSummary(itemCount, totalPrice) {
+        const formattedPrice = new Intl.NumberFormat('ru-RU', {
+            style: 'currency',
+            currency: 'RUB',
+            minimumFractionDigits: 0
+        }).format(totalPrice);
+        
+        if (cartTotalItems) {
+            cartTotalItems.textContent = `${itemCount} ${getWordForm(itemCount, ['товар', 'товара', 'товаров'])}`;
+        }
+        
+        if (cartItemsPrice) {
+            cartItemsPrice.textContent = `${formattedPrice}`;
+        }
+        
+        if (cartTotalPrice) {
+            cartTotalPrice.textContent = `${formattedPrice}`;
+        }
+        
+        // Активируем кнопку оформления если есть товары
+        if (checkoutBtn) {
+            checkoutBtn.disabled = itemCount === 0;
+        }
+    }
+    
+    // ================ ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ================
+    
+    // Получить корзину из localStorage
+    function getCart() {
+        try {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            return Array.isArray(cart) ? cart : [];
+        } catch (error) {
+            console.error('Ошибка чтения корзины:', error);
+            return [];
+        }
+    }
+    
+    // Удалить товар из корзины
+    function removeFromCart(gameId) {
+        const cart = getCart();
+        const newCart = cart.filter(id => id.toString() !== gameId.toString());
+        localStorage.setItem('cart', JSON.stringify(newCart));
+        
+        // Обновляем счетчик в шапке
+        updateHeaderCartCount();
+    }
+    
+    // Рассчитать общую стоимость
+    function calculateTotalPrice(games) {
+        return games.reduce((total, game) => total + (game.cost || 0), 0);
+    }
+    
+    // Рассчитать стоимость из текущей корзины
+    function calculateTotalPriceFromCart() {
+        const cart = getCart();
+        // В реальном приложении здесь нужно загрузить игры и посчитать
+        // Сейчас вернем примерную сумму
+        return cart.length * 1000; // Пример: 1000 руб за товар
+    }
+    
+    // Обновить счетчик в шапке
+    function updateHeaderCartCount() {
+        const cart = getCart();
+        const cartCountElement = document.querySelector('#cart-count');
+        
+        if (cartCountElement) {
+            if (cart.length > 0) {
+                cartCountElement.textContent = cart.length;
+                cartCountElement.classList.remove('d-none');
+            } else {
+                cartCountElement.classList.add('d-none');
+            }
+        }
+    }
+    
+    // Показать уведомление
+    function showNotification(message, type = 'info') {
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible position-fixed`;
+        alert.style.top = '20px';
+        alert.style.right = '20px';
+        alert.style.zIndex = '9999';
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(alert);
+        
+        // Автоматически закрыть через 3 секунды
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.remove();
+            }
+        }, 3000);
+    }
+    
+    // Получить правильную форму слова
+    function getWordForm(number, forms) {
+        number = Math.abs(number) % 100;
+        const n1 = number % 10;
+        
+        if (number > 10 && number < 20) return forms[2];
+        if (n1 > 1 && n1 < 5) return forms[1];
+        if (n1 === 1) return forms[0];
+        return forms[2];
+    }
+    
+    // Инициализация счетчика в шапке
+    updateHeaderCartCount();
+});
+```
+
+---
+
+### 4. `log-reg.js`
+**Расположение:** `js/log-reg.js`
+
+**Назначение:** Логика входа и регистрации пользователей
+
+```javascript
+let mailBox = document.getElementById("inputMail");
+let passwordBox = document.getElementById("inputPassword");
+
+mailBox.addEventListener('input', ()=>{
+    console.log(mailBox.value)
+})
+
+console.log(passwordBox.value);
+passwordBox.addEventListener('input', ()=>{
+    console.log(passwordBox.value)
+});
+
+
+
+
+if (document.getElementById("doLoginButton")){
+
+    //ДЛЯ АВТОРИЗАЦИИ
+
+    let doLogin = document.getElementById("doLoginButton");
+
+    doLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        const email = mailBox.value.trim();
+        const password = passwordBox.value;
+        
+        // Валидация
+        if (!email || !password) {
+            alert('Заполните все поля!');
+            return;
+        }
+        
+        if (!email.includes('@')) {
+            alert('Введите корректный email!');
+            return;
+        }
+
+        doLogin.textContent = 'Вход...';
+        doLogin.disabled = true;
+        
+
+
+        // Отправляем запрос к серверу
+
+        fetch('http://localhost:3000/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: email,
+                password: password
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Сохраняем пользователя
+                localStorage.setItem('user', JSON.stringify(data.user));
+                alert(`Добро пожаловать, ${data.user.login}!`);
+                
+                // Переходим на главную
+                window.location.href = './index.html';
+            } else {
+                alert(data.error || 'Ошибка входа');
+                // Возвращаем кнопку
+                doLogin.textContent = 'Вход';
+                doLogin.disabled = false;
+            }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        alert('Сервер не отвечает');
+        doLogin.textContent = 'Вход';
+        doLogin.disabled = false;
+    });
+
+    });}
+
+
+if (document.getElementById("doRegButton")){
+    // ДЛЯ РЕГИСТРАЦИИ
+
+    let checkPassword = document.getElementById("checkPassword");
+
+    console.log(checkPassword.value);
+    checkPassword.addEventListener('input', ()=>{
+        console.log(checkPassword.value)
+    });
+
+
+    let doRegister = document.getElementById("doRegButton");
+
+    doRegister.addEventListener('click',  (e) => {
+        e.preventDefault();
+
+        const email = mailBox.value.trim();
+        const password = passwordBox.value;
+        const check_Password = checkPassword.value;
+        
+        // Валидация
+        if (!email || !password) {
+            alert('Заполните все поля!');
+            return;
+        }
+        
+        if (!email.includes('@')) {
+            alert('Введите корректный email!');
+            return;
+        }
+        if (password != check_Password){
+            alert('Пароли не совпадают!!');
+            return;
+        }
+
+        doRegister.textContent = 'Регистрация...';
+        doRegister.disabled = true;
+        
+
+        // ⬇⬇⬇ ДОБАВЬ ЭТО ⬇⬇⬇
+        fetch('http://localhost:3000/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: email,
+                password: password
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Регистрация успешна! Теперь войдите.');
+                window.location.href = './login.html';
+            } else {
+                alert(data.error || 'Ошибка регистрации');
+                doRegister.textContent = 'Зарегистрироваться';
+                doRegister.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            alert('Сервер не отвечает');
+            doRegister.textContent = 'Зарегистрироваться';
+            doRegister.disabled = false;
+        });
+
+    });}
+```
+
+---
+
+### 5. `server.js`
+**Расположение:** `js/server.js`
+
+**Назначение:** Серверная часть (API) - обработка запросов
+
+```javascript
+// ==================== ПОДКЛЮЧАЕМ БИБЛИОТЕКИ ====================
+const express = require('express');
+const cors = require('cors');
+const Database = require('better-sqlite3');
+const fs = require('fs');
+
+// ==================== СОЗДАЕМ СЕРВЕР ====================
+const app = express();
+app.use(cors());
+app.use(express.json());
+const PORT = 3000;
+
+// ==================== ПОДКЛЮЧАЕМ БАЗУ ДАННЫХ ====================
+console.log('🔍 Проверяю наличие файла базы данных...');
+try {
+    if (fs.existsSync('./database.db')) {
+        console.log('✅ Файл database.db существует');
+    } else {
+        console.log('❌ Файл database.db НЕ найден! Создаю новый...');
+        // Создаем пустой файл
+        fs.writeFileSync('./database.db', '');
+    }
+} catch (error) {
+    console.log('⚠️ Ошибка проверки файла:', error.message);
+}
+
+let db;
+try {
+    db = new Database('./database.db');
+    console.log('✅ База данных подключена');
+} catch (error) {
+    console.error('❌ Ошибка подключения к БД:', error.message);
+    process.exit(1);
+}
+
+// ==================== СОЗДАЕМ ТАБЛИЦЫ ЕСЛИ ИХ НЕТ ====================
+
+function initializeDatabase() {
+    try {
+        console.log('🔧 Инициализация базы данных...');
+        
+        // Создаем таблицу User если её нет
+        db.prepare(`
+            CREATE TABLE IF NOT EXISTS User (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                login TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                role TEXT DEFAULT 'user'
+            )
+        `).run();
+        console.log('✅ Таблица User создана/проверена');
+        
+        // Создаем таблицу game если её нет
+        db.prepare(`
+            CREATE TABLE IF NOT EXISTS game (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_user INTEGER,
+                name TEXT NOT NULL,
+                description TEXT,
+                cost INTEGER NOT NULL,
+                picture TEXT DEFAULT 'default-frog.jpg',
+                FOREIGN KEY (id_user) REFERENCES User(id)
+            )
+        `).run();
+        console.log('✅ Таблица game создана/проверена');
+        
+        // Добавляем тестового пользователя если его нет
+        const testUser = db.prepare('SELECT * FROM User WHERE login = ?').get('test@test.com');
+        if (!testUser) {
+            db.prepare(`
+                INSERT INTO User (login, password, role) 
+                VALUES (?, ?, ?)
+            `).run('test@test.com', '123456', 'user');
+            console.log('✅ Тестовый пользователь создан');
+        }
+        
+        // Добавляем тестовую игру если их нет
+        const gamesCount = db.prepare('SELECT COUNT(*) as count FROM game').get().count;
+        if (gamesCount === 0) {
+            db.prepare(`
+                INSERT INTO game (id_user, name, description, cost, picture) 
+                VALUES (1, 'Тестовая лягушка', 'Мягкая игрушка для тестирования', 999, 'default-frog.jpg')
+            `).run();
+            console.log('✅ Тестовая игра добавлена');
+        }
+        
+    } catch (error) {
+        console.error('❌ Ошибка инициализации БД:', error.message);
+        console.error('Стек ошибки:', error.stack);
+    }
+}
+
+// Вызываем инициализацию
+initializeDatabase();
+
+// ==================== ПРОСТЕЙШИЙ API ДЛЯ ТЕСТИРОВАНИЯ ====================
+
+app.get('/api/test', (req, res) => {
+    console.log('✅ Запрос /api/test получен');
+    res.json({ 
+        success: true,
+        message: 'Сервер работает! 🐸',
+        time: new Date().toLocaleString('ru-RU')
+    });
+});
+
+// ТЕСТОВЫЙ endpoint для добавления игры - ОЧЕНЬ ПРОСТОЙ
+app.post('/api/games', (req, res) => {
+    console.log('➕ ПОЛУЧЕН ЗАПРОС НА ДОБАВЛЕНИЕ ИГРЫ:');
+    console.log('📦 Тело запроса:', JSON.stringify(req.body, null, 2));
+    
+    try {
+        // Простейшая проверка
+        if (!req.body.name) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Требуется название товара' 
+            });
+        }
+        
+        // Простейшее добавление
+        const { name, description = '', cost = 1000, picture = 'default-frog.jpg', userId = 1 } = req.body;
+        
+        console.log('📝 Параметры для добавления:');
+        console.log('   Название:', name);
+        console.log('   Описание:', description);
+        console.log('   Цена:', cost);
+        console.log('   Картинка:', picture);
+        console.log('   ID владельца:', userId);
+        
+        // Проверяем подключение к БД
+        try {
+            const test = db.prepare('SELECT 1 as test').get();
+            console.log('✅ Подключение к БД работает');
+        } catch (dbError) {
+            console.error('❌ Ошибка подключения к БД:', dbError.message);
+            return res.status(500).json({ 
+                success: false, 
+                error: 'Ошибка БД: ' + dbError.message 
+            });
+        }
+        
+        // Пробуем добавить игру
+        try {
+            const result = db.prepare(`
+                INSERT INTO game (id_user, name, description, cost, picture) 
+                VALUES (?, ?, ?, ?, ?)
+            `).run(userId, name, description, cost, picture);
+            
+            const gameId = result.lastInsertRowid;
+            console.log(`✅ Игра добавлена успешно! ID: ${gameId}`);
+            
+            // Получаем добавленную игру
+            const newGame = db.prepare(`
+                SELECT g.*, u.login as owner_login 
+                FROM game g
+                LEFT JOIN User u ON g.id_user = u.id
+                WHERE g.id = ?
+            `).get(gameId);
+            
+            res.json({ 
+                success: true, 
+                gameId: gameId,
+                game: newGame,
+                message: 'Игра успешно добавлена! 🎉'
+            });
+            
+        } catch (insertError) {
+            console.error('❌ Ошибка при INSERT:', insertError.message);
+            console.error('SQL ошибка:', insertError);
+            
+            // Попробуем создать таблицу если её нет
+            if (insertError.message.includes('no such table') || insertError.message.includes('game')) {
+                console.log('⚠️ Таблица game не существует, создаем...');
+                try {
+                    db.prepare(`
+                        CREATE TABLE IF NOT EXISTS game (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            id_user INTEGER,
+                            name TEXT NOT NULL,
+                            description TEXT,
+                            cost INTEGER NOT NULL,
+                            picture TEXT DEFAULT 'default-frog.jpg'
+                        )
+                    `).run();
+                    console.log('✅ Таблица game создана');
+                    
+                    // Пробуем снова
+                    const result = db.prepare(`
+                        INSERT INTO game (id_user, name, description, cost, picture) 
+                        VALUES (?, ?, ?, ?, ?)
+                    `).run(userId, name, description, cost, picture);
+                    
+                    const gameId = result.lastInsertRowid;
+                    
+                    res.json({ 
+                        success: true, 
+                        gameId: gameId,
+                        message: 'Игра добавлена (таблица создана автоматически)!'
+                    });
+                    
+                } catch (createError) {
+                    console.error('❌ Ошибка создания таблицы:', createError.message);
+                    res.status(500).json({ 
+                        success: false, 
+                        error: 'Ошибка создания таблицы: ' + createError.message 
+                    });
+                }
+            } else {
+                res.status(500).json({ 
+                    success: false, 
+                    error: 'Ошибка БД: ' + insertError.message 
+                });
+            }
+        }
+        
+    } catch (error) {
+        console.error('❌ КРИТИЧЕСКАЯ ОШИБКА:', error);
+        console.error('Полный стек:', error.stack);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Критическая ошибка сервера: ' + error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
+
+// ==================== ДРУГИЕ API ====================
+
+app.post('/api/login', (req, res) => {
+    console.log('🔐 Запрос на вход:', req.body.username);
+    res.json({ 
+        success: true, 
+        user: { id: 1, login: req.body.username || 'test', role: 'user' },
+        message: 'Вход выполнен (тестовый режим)'
+    });
+});
+
+app.get('/api/games', (req, res) => {
+    console.log('🛍️ Запрос списка игр');
+    try {
+        const games = db.prepare(`
+            SELECT g.*, u.login as owner_login 
+            FROM game g
+            LEFT JOIN User u ON g.id_user = u.id
+            ORDER BY g.id DESC
+        `).all();
+        
+        console.log(`✅ Найдено игр: ${games.length}`);
+        res.json({ 
+            success: true, 
+            games: games,
+            count: games.length
+        });
+    } catch (error) {
+        console.error('❌ Ошибка получения игр:', error.message);
+        // Возвращаем тестовые данные
+        res.json({ 
+            success: true, 
+            games: [
+                { id: 1, name: 'Тестовая лягушка', description: 'Для тестирования', cost: 999, id_user: 1, owner_login: 'test@test.com' }
+            ],
+            count: 1
+        });
+    }
+});
+
+// ==================== ЗАПУСК СЕРВЕРА ====================
+app.listen(PORT, () => {
+    console.log('\n==========================================');
+    console.log('🚀 Сервер запущен!');
+    console.log(`🌐 Адрес: http://localhost:${PORT}`);
+    console.log('\n📋 Доступные API:');
+    console.log(`   GET  http://localhost:${PORT}/api/test`);
+    console.log(`   POST http://localhost:${PORT}/api/games (добавить игру)`);
+    console.log(`   GET  http://localhost:${PORT}/api/games (список игр)`);
+    console.log(`   POST http://localhost:${PORT}/api/login (вход)`);
+    console.log('==========================================\n');
+    
+    // Проверяем базу данных
+    console.log('🔍 Проверка базы данных:');
+    try {
+        const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+        console.log('📊 Таблицы в БД:', tables.map(t => t.name).join(', '));
+        
+        tables.forEach(table => {
+            const count = db.prepare(`SELECT COUNT(*) as count FROM ${table}`).get().count;
+            console.log(`   ${table}: ${count} записей`);
+        });
+    } catch (error) {
+        console.log('❌ Ошибка проверки БД:', error.message);
+    }
+});
+```
+
+---
+
+### 6. `shop.js`
+**Расположение:** `js/shop.js`
+
+**Назначение:** Динамическая загрузка товаров в магазине
+
+```javascript
+// shop.js - динамическая загрузка карточек с пагинацией и CRUD
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Страница магазина загружена');
+    
+    const cardsContainer = document.getElementById('cards-net');
+    const API_URL = 'http://localhost:3000/api';
+    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+    
+    // Пагинация
+    let currentPage = 1;
+    const itemsPerPage = 6;
+    let totalGames = 0;
+    let allGames = [];
+    
+    // Создаем контейнер для пагинации
+    const paginationContainer = document.createElement('div');
+    paginationContainer.className = 'pagination-container mt-4';
+    cardsContainer.parentNode.appendChild(paginationContainer);
+    
+    // Создаем панель админа
+    const adminPanel = createAdminPanel();
+    cardsContainer.parentNode.insertBefore(adminPanel, cardsContainer);
+    
+    // Загружаем игры
+    loadGames();
+    
+    // =============== ОСНОВНЫЕ ФУНКЦИИ ===============
+    
+    async function loadGames() {
+        try {
+            console.log('Загружаю игры с сервера...');
+            
+            // Показываем загрузку
+            cardsContainer.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Загрузка...</span>
+                    </div>
+                    <p class="mt-2">Загружаем игрушки...</p>
+                </div>
+            `;
+            
+            const response = await fetch(`${API_URL}/games`);
+            
+            if (!response.ok) {
+                throw new Error(`Ошибка сервера: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                console.log(`✅ Загружено ${data.games.length} игр`);
+                allGames = data.games;
+                totalGames = data.games.length;
+                
+                // Обновляем панель админа
+                updateAdminPanel();
+                
+                // Отображаем первую страницу
+                displayCurrentPage();
+                renderPagination();
+            } else {
+                throw new Error(data.error || 'Ошибка загрузки игр');
+            }
+            
+        } catch (error) {
+            console.error('Ошибка загрузки игр:', error);
+            
+            cardsContainer.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">Ошибка загрузки!</h4>
+                    <p>Не удалось загрузить игры. Попробуйте обновить страницу.</p>
+                    <p class="mb-0 small">${error.message}</p>
+                </div>
+            `;
+        }
+    }
+    
+    function displayCurrentPage() {
+        if (allGames.length === 0) {
+            cardsContainer.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <h3 class="text-muted">😔 Пока нет игрушек в магазине</h3>
+                    <p>Будьте первым, кто добавит свою лягушку!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Вычисляем какие игры показывать
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const gamesToShow = allGames.slice(startIndex, endIndex);
+        
+        // Очищаем контейнер
+        cardsContainer.innerHTML = '';
+        
+        // Создаем карточки
+        gamesToShow.forEach(game => {
+            const card = createGameCard(game);
+            cardsContainer.appendChild(card);
+        });
+        
+        // Добавляем обработчики
+        setupEventListeners();
+    }
+    
+    function renderPagination() {
+        const totalPages = Math.ceil(totalGames / itemsPerPage);
+        
+        if (totalPages <= 1) {
+            paginationContainer.innerHTML = '';
+            return;
+        }
+        
+        let paginationHTML = `
+            <nav aria-label="Навигация по страницам">
+                <ul class="pagination justify-content-center">
+        `;
+        
+        // Кнопка "Назад"
+        paginationHTML += `
+            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                <button class="page-link" onclick="changePage(${currentPage - 1})">
+                    &laquo; Назад
+                </button>
+            </li>
+        `;
+        
+        // Номера страниц
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                paginationHTML += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <button class="page-link" onclick="changePage(${i})">
+                            ${i}
+                        </button>
+                    </li>
+                `;
+            } else if (i === currentPage - 2 || i === currentPage + 2) {
+                paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+        
+        // Кнопка "Вперед"
+        paginationHTML += `
+            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                <button class="page-link" onclick="changePage(${currentPage + 1})">
+                    Вперед &raquo;
+                </button>
+            </li>
+        `;
+        
+        paginationHTML += `
+                </ul>
+            </nav>
+            <div class="text-center text-muted mt-2">
+                Страница ${currentPage} из ${totalPages} • ${totalGames} товаров
+            </div>
+        `;
+        
+        paginationContainer.innerHTML = paginationHTML;
+    }
+    
+    // =============== CRUD ФУНКЦИИ ===============
+    
+    function createGameCard(game) {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'card mb-4';
+        cardDiv.style.width = '280px';
+        cardDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+        cardDiv.style.transition = 'all 0.3s ease';
+        cardDiv.dataset.gameId = game.id;
+        
+        const isOwner = currentUser && game.id_user === currentUser.id;
+        const isAdmin = currentUser && currentUser.role === 'admin';
+        
+        cardDiv.addEventListener('mouseenter', () => {
+            cardDiv.style.transform = 'translateY(-5px)';
+            cardDiv.style.boxShadow = '0 10px 20px rgba(0,0,0,0.15)';
+        });
+        
+        cardDiv.addEventListener('mouseleave', () => {
+            cardDiv.style.transform = 'translateY(0)';
+            cardDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+        });
+        
+        // Форматируем цену
+        const formattedPrice = new Intl.NumberFormat('ru-RU', {
+            style: 'currency',
+            currency: 'RUB',
+            minimumFractionDigits: 0
+        }).format(game.cost);
+        
+        let imageSrc = './assets/images/cards/';
+        if (game.picture && game.picture.trim() !== '') {
+            imageSrc += game.picture;
+        } else {
+            imageSrc += 'default-frog.jpg';
+        }
+        
+        // Создаем карточку
+        cardDiv.innerHTML = `
+            <div class="position-relative">
+                <img src="${imageSrc}" 
+                     class="card-img-top" 
+                     alt="${game.name}"
+                     style="height: 200px; object-fit: cover;"
+                     onerror="this.onerror=null; this.src='./assets/images/cards/default-frog.jpg'">
+                
+                ${isOwner ? 
+                    '<span class="position-absolute top-0 start-0 badge bg-info m-2">Ваша</span>' : 
+                    ''}
+                ${isAdmin ? 
+                    '<span class="position-absolute top-0 end-0 badge bg-warning text-dark m-2">Админ</span>' : 
+                    ''}
+            </div>
+            
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title mb-0" style="max-width: 70%;">${game.name}</h5>
+                    <span class="badge bg-secondary">ID: ${game.id}</span>
+                </div>
+                
+                <div class="mb-2">
+                    <span class="badge bg-success">В наличии</span>
+                    <small class="text-muted ms-2">Владелец: ${game.owner_login || 'Неизвестно'}</small>
+                </div>
+                
+                <p class="card-text" style="height: 60px; overflow: hidden; text-overflow: ellipsis;">
+                    ${game.description || 'Мягкая игрушка лягушка. Отличный подарок!'}
+                </p>
+                
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <h5 class="text-success mb-0">${formattedPrice}</h5>
+                    <button class="btn btn-primary add-to-cart-btn" 
+                            data-game-id="${game.id}">
+                        🛒 В корзину
+                    </button>
+                </div>
+                
+                ${isOwner || isAdmin ? `
+                <div class="btn-group w-100 mt-3">
+                    ${isOwner ? `
+                    <button class="btn btn-sm btn-outline-warning edit-game-btn" 
+                            data-game-id="${game.id}">
+                        ✏️ Редактировать
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger delete-game-btn" 
+                            data-game-id="${game.id}">
+                        🗑️ Удалить
+                    </button>
+                    ` : ''}
+                    ${isAdmin && !isOwner ? `
+                    <button class="btn btn-sm btn-outline-danger delete-game-btn" 
+                            data-game-id="${game.id}">
+                        🗑️ Удалить (админ)
+                    </button>
+                    ` : ''}
+                </div>
+                ` : ''}
+            </div>
+        `;
+        
+        return cardDiv;
+    }
+    
+    function setupEventListeners() {
+        // Кнопки "В корзину"
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const gameId = this.getAttribute('data-game-id');
+                addToCart(gameId, this);
+            });
+        });
+        
+        // Кнопки редактирования
+        document.querySelectorAll('.edit-game-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const gameId = this.getAttribute('data-game-id');
+                editGame(gameId);
+            });
+        });
+        
+        // Кнопки удаления
+        document.querySelectorAll('.delete-game-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const gameId = this.getAttribute('data-game-id');
+                const isAdmin = this.textContent.includes('админ');
+                deleteGame(gameId, isAdmin);
+            });
+        });
+    }
+    
+    // =============== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===============
+    
+    function createAdminPanel() {
+        const panel = document.createElement('div');
+        panel.id = 'admin-panel';
+        panel.className = 'admin-panel mb-4 p-3 border rounded bg-light';
+        panel.style.display = 'none';
+        
+        panel.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">⚙️ Управление товарами</h5>
+                <button id="toggle-admin-panel" class="btn btn-sm btn-outline-secondary">
+                    Скрыть
+                </button>
+            </div>
+            <div id="admin-panel-content" class="mt-3">
+                <button id="add-game-btn" class="btn btn-success btn-sm">
+                    ➕ Добавить новый товар
+                </button>
+                <div class="mt-2">
+                    <small class="text-muted">
+                        Вы можете редактировать и удалять свои товары. Админ может удалять любые.
+                    </small>
+                </div>
+            </div>
+        `;
+        
+        return panel;
+    }
+    
+    function updateAdminPanel() {
+        const adminPanel = document.getElementById('admin-panel');
+        if (!currentUser) {
+            adminPanel.style.display = 'none';
+            return;
+        }
+        
+        adminPanel.style.display = 'block';
+        
+        document.getElementById('toggle-admin-panel').onclick = function() {
+            const content = document.getElementById('admin-panel-content');
+            const isHidden = content.style.display === 'none';
+            content.style.display = isHidden ? 'block' : 'none';
+            this.textContent = isHidden ? 'Скрыть' : 'Показать';
+        };
+        
+        document.getElementById('add-game-btn').onclick = showAddGameModal;
+    }
+    
+    // =============== МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ ===============
+    
+    function showAddGameModal() {
+        const modalHTML = `
+            <div class="modal fade" id="addGameModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">➕ Добавить новый товар</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="add-game-form">
+                                <div class="mb-3">
+                                    <label class="form-label">Название товара *</label>
+                                    <input type="text" class="form-control" id="game-name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Описание</label>
+                                    <textarea class="form-control" id="game-description" rows="3" 
+                                              placeholder="Опишите ваш товар..."></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Цена (₽) *</label>
+                                    <input type="number" class="form-control" id="game-price" 
+                                           min="0" value="1000" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Имя файла картинки</label>
+                                    <input type="text" class="form-control" id="game-image" 
+                                           placeholder="frog1.jpg">
+                                    <small class="text-muted">
+                                        Файл должен находиться в папке /assets/images/cards/
+                                    </small>
+                                </div>
+                                <div class="form-text">
+                                    * - обязательные поля
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Отмена
+                            </button>
+                            <button type="button" class="btn btn-success" id="submit-add-game">
+                                Добавить товар
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Удаляем старую модалку если есть
+        const oldModal = document.getElementById('addGameModal');
+        if (oldModal) oldModal.remove();
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        const modalElement = document.getElementById('addGameModal');
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+        
+        // Обработчик отправки формы
+        document.getElementById('submit-add-game').onclick = async function() {
+            const gameData = {
+                name: document.getElementById('game-name').value.trim(),
+                description: document.getElementById('game-description').value.trim(),
+                cost: parseInt(document.getElementById('game-price').value),
+                picture: document.getElementById('game-image').value.trim() || 'default-frog.jpg',
+                userId: currentUser ? currentUser.id : 1
+            };
+            
+            // Валидация
+            if (!gameData.name) {
+                alert('Введите название товара!');
+                return;
+            }
+            
+            if (isNaN(gameData.cost) || gameData.cost < 0) {
+                alert('Введите корректную цену!');
+                return;
+            }
+            
+            // Блокируем кнопку
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Добавляем...';
+            
+            try {
+                const response = await fetch(`${API_URL}/games`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(gameData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Товар успешно добавлен!');
+                    modal.hide();
+                    
+                    // Удаляем модалку из DOM
+                    modalElement.remove();
+                    
+                    // Перезагружаем список товаров
+                    loadGames();
+                } else {
+                    alert(`❌ Ошибка: ${result.error}`);
+                    this.disabled = false;
+                    this.textContent = 'Добавить товар';
+                }
+            } catch (error) {
+                alert('❌ Ошибка при добавлении товара');
+                console.error(error);
+                this.disabled = false;
+                this.textContent = 'Добавить товар';
+            }
+        };
+        
+        // Закрытие модалки при клике на backdrop
+        modalElement.addEventListener('hidden.bs.modal', function() {
+            modalElement.remove();
+        });
+    }
+    
+    // =============== КОРЗИНА И CRUD ===============
+    
+    function addToCart(gameId, button) {
+        const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+        
+        if (!currentUser) {
+            alert('❌ Сначала войдите в систему!');
+            window.location.href = './login.html';
+            return;
+        }
+        
+        const gameCard = document.querySelector(`[data-game-id="${gameId}"]`);
+        if (gameCard && gameCard.querySelector('.badge.bg-info')) {
+            if (!confirm('Это ваша собственная игра. Вы уверены, что хотите купить её у себя?')) {
+                return;
+            }
+        }
+        
+        const originalText = button.innerHTML;
+        const originalClass = button.className;
+        
+        button.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        button.className = 'btn btn-secondary';
+        button.disabled = true;
+        
+        setTimeout(() => {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            
+            if (cart.includes(gameId.toString())) {
+                button.innerHTML = '✅ Уже в корзине';
+            } else {
+                cart.push(gameId.toString());
+                localStorage.setItem('cart', JSON.stringify(cart));
+                button.innerHTML = '✅ Добавлено!';
+                updateCartCount();
+            }
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.className = originalClass;
+                button.disabled = false;
+            }, 1500);
+            
+            console.log(`🛒 Игра ${gameId} добавлена в корзину`);
+        }, 800);
+    }
+    
+    async function editGame(gameId) {
+        const game = allGames.find(g => g.id == gameId);
+        if (!game) return;
+        
+        const newName = prompt('Введите новое название:', game.name);
+        if (!newName) return;
+        
+        const newDescription = prompt('Введите новое описание:', game.description || '');
+        const newPrice = prompt('Введите новую цену:', game.cost);
+        
+        if (!newPrice || isNaN(newPrice) || newPrice < 0) {
+            alert('Цена должна быть числом больше 0!');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${API_URL}/games/${gameId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: newName,
+                    description: newDescription,
+                    cost: parseInt(newPrice),
+                    userId: currentUser.id
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert('✅ Товар обновлен!');
+                loadGames();
+            } else {
+                alert(`❌ Ошибка: ${result.error}`);
+            }
+        } catch (error) {
+            alert('❌ Ошибка при обновлении товара');
+            console.error(error);
+        }
+    }
+    
+    async function deleteGame(gameId, isAdmin = false) {
+        const game = allGames.find(g => g.id == gameId);
+        if (!game) return;
+        
+        const confirmMessage = isAdmin 
+            ? `Вы администратор. Удалить товар "${game.name}" (ID: ${gameId})?`
+            : `Удалить ваш товар "${game.name}"?`;
+        
+        if (!confirm(confirmMessage)) return;
+        
+        try {
+            const response = await fetch(`${API_URL}/games/${gameId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: currentUser.id,
+                    isAdmin: isAdmin
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert('✅ Товар удален!');
+                loadGames();
+            } else {
+                alert(`❌ Ошибка: ${result.error}`);
+            }
+        } catch (error) {
+            alert('❌ Ошибка при удалении товара');
+            console.error(error);
+        }
+    }
+    
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const cartCount = document.querySelector('#cart-count');
+        
+        if (cartCount) {
+            cartCount.textContent = cart.length;
+            cartCount.classList.toggle('d-none', cart.length === 0);
+        }
+    }
+    
+    // Инициализация счетчика корзины
+    updateCartCount();
+});
+
+// Глобальная функция для пагинации
+window.changePage = function(page) {
+    console.log('changePage called:', page);
+    const event = new CustomEvent('pageChange', { detail: { page } });
+    window.dispatchEvent(event);
+};
+
+// Обработчик изменения страницы
+window.addEventListener('pageChange', function(e) {
+    if (typeof changePageInternal === 'function') {
+        changePageInternal(e.detail.page);
+    }
+});
+```
+
+---
+
+## 🗃️ База данных
+
+**Файл:** `database.db`
+
+**Тип:** SQLite база данных
+
+**Размер:** 16.00 КБ
+
+**Содержимое:** *Бинарный файл SQLite*
+
+---
+
+## 📁 Структура проекта
+
+```
+frog-site/
+│
+├── 📄 index.html                 (Главная страница)
+├── 📄 shop.html                  (Страница магазина)
+├── 📄 basket.html                (Страница корзины)
+├── 📄 login.html                 (Страница входа)
+├── 📄 register.html              (Страница регистрации)
+├── 📄 404.html                   (Страница 404)
+│
+├── 📂 css/
+│   └── 📄 style.css              (Основные стили)
+│
+├── 📂 js/
+│   ├── 📄 auth-header.js         (Логика авторизации в шапке)
+│   ├── 📄 backend.js             (Функции для работы с БД)
+│   ├── 📄 basket.js              (Логика корзины)
+│   ├── 📄 log-reg.js             (Логика входа/регистрации)
+│   ├── 📄 server.js              (Серверная часть - API)
+│   └── 📄 shop.js                (Динамическая загрузка товаров)
+│
+├── 📂 assets/
+│   ├── 📄 favicon.ico
+│   ├── 📂 images/
+│   │   ├── 📄 header-frog.svg
+│   │   ├── 📂 cards/
+│   │   │   ├── 📄 default-frog.jpg
+│   │   │   └── ... (другие изображения товаров)
+│   │   └── 📂 HomeImg/           (Изображения для карусели)
+│   └── ... (другие ресурсы)
+│
+├── 📄 database.db                (SQLite база данных)
+└── 📄 server.js                  (точка входа сервера - в папке js)
+```
+
+## 📊 Статистика
+
+### Количество файлов по типам:
+| Тип файла | Количество | Строк кода |
+|-----------|------------|------------|
+| CSS | 1 | 206 |
+| HTML | 6 | 521 |
+| JavaScript | 6 | 1,726 |
+| **Итого** | **13** | **2,453** |
+
+### Общий размер кода:
+- **81.9 КБ**
+- **+ база данных SQLite**
+
+### Детали по файлам:
+| Файл | Тип | Размер | Строк |
+|------|-----|--------|-------|
+| 404.html | HTML | 0.2 КБ | 11 |
+| auth-header.js | JavaScript | 2.1 КБ | 68 |
+| backend.js | JavaScript | 4.9 КБ | 168 |
+| basket.html | HTML | 6.0 КБ | 165 |
+| basket.js | JavaScript | 14.4 КБ | 421 |
+| index.html | HTML | 4.3 КБ | 111 |
+| log-reg.js | JavaScript | 4.0 КБ | 150 |
+| login.html | HTML | 3.2 КБ | 83 |
+| register.html | HTML | 3.2 КБ | 82 |
+| server.js | JavaScript | 10.4 КБ | 293 |
+| shop.html | HTML | 2.4 КБ | 69 |
+| shop.js | JavaScript | 23.4 КБ | 626 |
+| style.css | CSS | 3.5 КБ | 206 |
+
+---
+
+*Документация создана автоматически.*

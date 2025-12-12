@@ -1,7 +1,6 @@
 let mailBox = document.getElementById("inputMail");
 let passwordBox = document.getElementById("inputPassword");
 
-console.log(mailBox.value);
 mailBox.addEventListener('input', ()=>{
     console.log(mailBox.value)
 })
