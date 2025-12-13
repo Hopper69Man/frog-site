@@ -1,6 +1,6 @@
 # 🐸 Frog Site - Полная документация проекта
 
-*Документация создана: 13.12.2025 00:12:57*
+*Документация создана: 13.12.2025 10:33:34*
 *Путь к проекту: `/home/hopper-main/frog-site`*
 
 ## 📋 Оглавление
@@ -891,185 +891,7 @@ function updateCartCount() {
 
 ---
 
-### 2. `backend.js`
-**Расположение:** `js/backend.js`
-
-**Назначение:** Функции для работы с базой данных
-
-```javascript
-const express = require('express');     // 1. Библиотека для сервера
-const cors = require('cors');           // 2. Библиотека для разрешения запросов
-const app = express();                  // 3. Создаем приложение
-app.use(cors());                        // 4. Разрешаем запросы с браузера
-app.use(express.json());                // 5. Умеем читать JSON
-const PORT = 3000;                      // 6. Будем слушать порт 3000
-
-
-const Database = require('better-sqlite3');
-
-const db = new Database('./database.db', {verbose: console.log});
-
-const tables = db.prepare(`
-    SELECT name FROM sqlite_master
-    WHERE type = 'table'
-    `).all()
-
-function testDB(){
-
-  console.log('\n=== ТАБЛИЦЫ В БАЗЕ ДАННЫХ ===');
-  console.log(`Найдено таблиц: ${tables.length}`);
-
-  tables.forEach((table, index) => {
-    console.log(`${index + 1}. ${table.name}`);
-  });
-
-  console.log(` Всего таблиц: ${tables.length}`);
-
-  // 2. Для каждой таблицы показываем структуру и данные
-  tables.forEach((table, index) => {
-    console.log(`\n${index + 1}. ТАБЛИЦА: ${table.name}, \n`);
-    
-    // Получаем информацию о колонках
-    try {
-
-      const columns = db.prepare(`PRAGMA table_info('${table.name}')`).all();
-      console.log('\n   Структура:');
-      columns.forEach(col => {
-        console.log(`     - ${col.name} (${col.type}) ${col.pk ? 'PRIMARY KEY' : ''}`);
-      });
-      
-      const data = db.prepare(`SELECT * FROM '${table.name}'`).all();
-      if (data.length > 0) {
-        console.log('\nзаписи:\n');
-
-        data.forEach(row => {
-          console.log('     ', row);
-        });
-        
-        const count = db.prepare(`SELECT COUNT(*) as total FROM '${table.name}'`).get();
-        console.log(`   Всего записей: ${count.total}, \n`);
-
-      } else {
-        console.log('   (таблица пустая)');
-      }
-      
-    } catch (error) {
-      console.log('   (ошибка чтения таблицы):', error.message);
-    }
-  });
-}
-
-// Авторизация пользователя
-function autorithation(username, password){
-  const user = db.prepare(`SELECT * FROM 'User' WHERE login = ? AND password = ?`)
-    .get(username, password);
-    return user;
-}
-
-// Получить игры пользователя
-function checkUserGame(userId){
-
-  try {
-    // Сначала проверяем существует ли пользователь
-    const user = db.prepare(`SELECT * FROM 'User' WHERE id = ?`).get(userId);
-    
-    if (!user) {
-      console.log(`??? Пользователь с ID ${userId} не существует в таблице User`);
-      return { success: false, error: 'User not found' };
-    }
-    
-    console.log(`!!! Пользователь найден: ${user.login} (${user.role})`);
-    
-    // Ищем его игры
-    const userGames = db.prepare(`
-      SELECT * FROM 'game' 
-      WHERE id_user = ? 
-      ORDER BY cost DESC
-    `).all(userId);
-    
-    if (userGames.length === 0) {
-      console.log(`У пользователя ${user.login} (ID: ${userId}) нет игр`);
-      return { success: true, games: [], message: 'No games found' };
-    }
-    
-    console.log(`!!! Игры пользователя ${user.login}: ${userGames.length} шт.`);
-    userGames.forEach(game => {
-      console.log(`   - ${game.name}: ${game.cost} руб.`);
-    });
-    
-    return { success: true, games: userGames };
-    
-  } catch (error) {
-    console.log('ХХХ Ошибка:', error.message);
-    return { success: false, error: error.message };
-  }  
-}
-
-// API для входа (использует функцию autorithation)
-app.post('/api/login', (req, res) => {
-    console.log('🔐 Получен запрос на вход:', req.body);
-    
-    const { username, password } = req.body;
-    const user = autorithation(username, password);
-    
-    if (user) {
-        console.log('✅ Пользователь найден:', user.login);
-        res.json({ 
-            success: true, 
-            user: { 
-                id: user.id, 
-                login: user.login, 
-                role: user.role 
-            }
-        });
-    } else {
-        console.log('❌ Пользователь не найден');
-        res.status(401).json({ 
-            success: false, 
-            error: 'Неверный логин или пароль' 
-        });
-    }
-});
-
-// API для регистрации (использует функцию addUser)
-app.post('/api/register', (req, res) => {
-    console.log('📝 Получен запрос на регистрацию:', req.body);
-    
-    const { username, password } = req.body;
-    const result = addUser(username, password);
-    
-    if (result.success) {
-        console.log('✅ Пользователь добавлен');
-        res.json({ 
-            success: true, 
-            userId: result.userId,
-            message: 'Регистрация успешна!' 
-        });
-    } else {
-        console.log('❌ Ошибка при регистрации');
-        res.status(400).json({ 
-            success: false, 
-            error: result.error 
-        });
-    }
-});
-
-// Запускаем сервер
-app.listen(PORT, () => {
-    console.log(`Сервер запущен на http://localhost:${PORT}`);
-    console.log(`Для входа: POST http://localhost:${PORT}/api/login`);
-    console.log(`Для регистрации: POST http://localhost:${PORT}/api/register`);
-});
-
-// testDB()
-// checkUserGame(userId)
-
-db.close();
-```
-
----
-
-### 3. `basket.js`
+### 2. `basket.js`
 **Расположение:** `js/basket.js`
 
 **Назначение:** Логика работы корзины покупок
@@ -1500,7 +1322,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ---
 
-### 4. `log-reg.js`
+### 3. `log-reg.js`
 **Расположение:** `js/log-reg.js`
 
 **Назначение:** Логика входа и регистрации пользователей
@@ -1660,7 +1482,7 @@ if (document.getElementById("doRegButton")){
 
 ---
 
-### 5. `server.js`
+### 4. `server.js`
 **Расположение:** `js/server.js`
 
 **Назначение:** Серверная часть (API) - обработка запросов
@@ -1671,12 +1493,31 @@ const express = require('express');
 const cors = require('cors');
 const Database = require('better-sqlite3');
 const fs = require('fs');
+const path = require('path');
 
 // ==================== СОЗДАЕМ СЕРВЕР ====================
 const app = express();
 app.use(cors());
 app.use(express.json());
 const PORT = 3000;
+
+// Логирование запросов
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+});
+
+// Обработчик ошибок JSON
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+        console.error('❌ Ошибка парсинга JSON:', err.message);
+        return res.status(400).json({ 
+            success: false, 
+            error: 'Неверный формат JSON в теле запроса' 
+        });
+    }
+    next();
+});
 
 // ==================== ПОДКЛЮЧАЕМ БАЗУ ДАННЫХ ====================
 console.log('🔍 Проверяю наличие файла базы данных...');
@@ -1685,7 +1526,6 @@ try {
         console.log('✅ Файл database.db существует');
     } else {
         console.log('❌ Файл database.db НЕ найден! Создаю новый...');
-        // Создаем пустой файл
         fs.writeFileSync('./database.db', '');
     }
 } catch (error) {
@@ -1722,12 +1562,11 @@ function initializeDatabase() {
         db.prepare(`
             CREATE TABLE IF NOT EXISTS game (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                id_user INTEGER,
+                id_user INTEGER NOT NULL,
                 name TEXT NOT NULL,
-                description TEXT,
-                cost INTEGER NOT NULL,
+                cost REAL NOT NULL DEFAULT 0,
                 picture TEXT DEFAULT 'default-frog.jpg',
-                FOREIGN KEY (id_user) REFERENCES User(id)
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `).run();
         console.log('✅ Таблица game создана/проверена');
@@ -1742,15 +1581,19 @@ function initializeDatabase() {
             console.log('✅ Тестовый пользователь создан');
         }
         
-        // Добавляем тестовую игру если их нет
-        const gamesCount = db.prepare('SELECT COUNT(*) as count FROM game').get().count;
-        if (gamesCount === 0) {
+        // Добавляем админа если его нет
+        const adminUser = db.prepare('SELECT * FROM User WHERE login = ?').get('admin@admin.com');
+        if (!adminUser) {
             db.prepare(`
-                INSERT INTO game (id_user, name, description, cost, picture) 
-                VALUES (1, 'Тестовая лягушка', 'Мягкая игрушка для тестирования', 999, 'default-frog.jpg')
-            `).run();
-            console.log('✅ Тестовая игра добавлена');
+                INSERT INTO User (login, password, role) 
+                VALUES (?, ?, ?)
+            `).run('admin@admin.com', 'admin123', 'admin');
+            console.log('✅ Администратор создан');
         }
+        
+        // Проверяем наличие игр
+        const gamesCount = db.prepare('SELECT COUNT(*) as count FROM game').get().count;
+        console.log(`✅ В базе уже есть ${gamesCount} игр`);
         
     } catch (error) {
         console.error('❌ Ошибка инициализации БД:', error.message);
@@ -1761,151 +1604,107 @@ function initializeDatabase() {
 // Вызываем инициализацию
 initializeDatabase();
 
-// ==================== ПРОСТЕЙШИЙ API ДЛЯ ТЕСТИРОВАНИЯ ====================
+// ==================== API ДЛЯ АВТОРИЗАЦИИ ====================
 
-app.get('/api/test', (req, res) => {
-    console.log('✅ Запрос /api/test получен');
-    res.json({ 
-        success: true,
-        message: 'Сервер работает! 🐸',
-        time: new Date().toLocaleString('ru-RU')
-    });
-});
-
-// ТЕСТОВЫЙ endpoint для добавления игры - ОЧЕНЬ ПРОСТОЙ
-app.post('/api/games', (req, res) => {
-    console.log('➕ ПОЛУЧЕН ЗАПРОС НА ДОБАВЛЕНИЕ ИГРЫ:');
-    console.log('📦 Тело запроса:', JSON.stringify(req.body, null, 2));
+// Регистрация
+app.post('/api/register', (req, res) => {
+    console.log('📝 Запрос на регистрацию:', req.body.username);
     
     try {
-        // Простейшая проверка
-        if (!req.body.name) {
+        const { username, password } = req.body;
+        
+        if (!username || !password) {
             return res.status(400).json({ 
                 success: false, 
-                error: 'Требуется название товара' 
+                error: 'Требуется логин и пароль' 
             });
         }
         
-        // Простейшее добавление
-        const { name, description = '', cost = 1000, picture = 'default-frog.jpg', userId = 1 } = req.body;
-        
-        console.log('📝 Параметры для добавления:');
-        console.log('   Название:', name);
-        console.log('   Описание:', description);
-        console.log('   Цена:', cost);
-        console.log('   Картинка:', picture);
-        console.log('   ID владельца:', userId);
-        
-        // Проверяем подключение к БД
-        try {
-            const test = db.prepare('SELECT 1 as test').get();
-            console.log('✅ Подключение к БД работает');
-        } catch (dbError) {
-            console.error('❌ Ошибка подключения к БД:', dbError.message);
-            return res.status(500).json({ 
+        if (!username.includes('@')) {
+            return res.status(400).json({ 
                 success: false, 
-                error: 'Ошибка БД: ' + dbError.message 
+                error: 'Email должен содержать @' 
             });
         }
         
-        // Пробуем добавить игру
-        try {
-            const result = db.prepare(`
-                INSERT INTO game (id_user, name, description, cost, picture) 
-                VALUES (?, ?, ?, ?, ?)
-            `).run(userId, name, description, cost, picture);
-            
-            const gameId = result.lastInsertRowid;
-            console.log(`✅ Игра добавлена успешно! ID: ${gameId}`);
-            
-            // Получаем добавленную игру
-            const newGame = db.prepare(`
-                SELECT g.*, u.login as owner_login 
-                FROM game g
-                LEFT JOIN User u ON g.id_user = u.id
-                WHERE g.id = ?
-            `).get(gameId);
-            
-            res.json({ 
-                success: true, 
-                gameId: gameId,
-                game: newGame,
-                message: 'Игра успешно добавлена! 🎉'
+        // Проверяем, нет ли уже такого пользователя
+        const existingUser = db.prepare('SELECT * FROM User WHERE login = ?').get(username);
+        if (existingUser) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Пользователь с таким email уже существует' 
             });
-            
-        } catch (insertError) {
-            console.error('❌ Ошибка при INSERT:', insertError.message);
-            console.error('SQL ошибка:', insertError);
-            
-            // Попробуем создать таблицу если её нет
-            if (insertError.message.includes('no such table') || insertError.message.includes('game')) {
-                console.log('⚠️ Таблица game не существует, создаем...');
-                try {
-                    db.prepare(`
-                        CREATE TABLE IF NOT EXISTS game (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            id_user INTEGER,
-                            name TEXT NOT NULL,
-                            description TEXT,
-                            cost INTEGER NOT NULL,
-                            picture TEXT DEFAULT 'default-frog.jpg'
-                        )
-                    `).run();
-                    console.log('✅ Таблица game создана');
-                    
-                    // Пробуем снова
-                    const result = db.prepare(`
-                        INSERT INTO game (id_user, name, description, cost, picture) 
-                        VALUES (?, ?, ?, ?, ?)
-                    `).run(userId, name, description, cost, picture);
-                    
-                    const gameId = result.lastInsertRowid;
-                    
-                    res.json({ 
-                        success: true, 
-                        gameId: gameId,
-                        message: 'Игра добавлена (таблица создана автоматически)!'
-                    });
-                    
-                } catch (createError) {
-                    console.error('❌ Ошибка создания таблицы:', createError.message);
-                    res.status(500).json({ 
-                        success: false, 
-                        error: 'Ошибка создания таблицы: ' + createError.message 
-                    });
-                }
-            } else {
-                res.status(500).json({ 
-                    success: false, 
-                    error: 'Ошибка БД: ' + insertError.message 
-                });
-            }
         }
+        
+        // Добавляем пользователя
+        const result = db.prepare(`
+            INSERT INTO User (login, password, role) 
+            VALUES (?, ?, 'user')
+        `).run(username, password);
+        
+        const newUser = db.prepare('SELECT * FROM User WHERE id = ?').get(result.lastInsertRowid);
+        
+        res.json({ 
+            success: true, 
+            user: { 
+                id: newUser.id, 
+                login: newUser.login, 
+                role: newUser.role 
+            },
+            message: 'Регистрация успешна!'
+        });
         
     } catch (error) {
-        console.error('❌ КРИТИЧЕСКАЯ ОШИБКА:', error);
-        console.error('Полный стек:', error.stack);
+        console.error('❌ Ошибка регистрации:', error.message);
         res.status(500).json({ 
             success: false, 
-            error: 'Критическая ошибка сервера: ' + error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            error: 'Ошибка сервера при регистрации' 
         });
     }
 });
 
-// ==================== ДРУГИЕ API ====================
-
+// Вход
 app.post('/api/login', (req, res) => {
     console.log('🔐 Запрос на вход:', req.body.username);
-    res.json({ 
-        success: true, 
-        user: { id: 1, login: req.body.username || 'test', role: 'user' },
-        message: 'Вход выполнен (тестовый режим)'
-    });
+    
+    try {
+        const { username, password } = req.body;
+        
+        const user = db.prepare('SELECT * FROM User WHERE login = ? AND password = ?')
+            .get(username, password);
+        
+        if (user) {
+            res.json({ 
+                success: true, 
+                user: { 
+                    id: user.id, 
+                    login: user.login, 
+                    role: user.role 
+                },
+                message: 'Вход выполнен'
+            });
+        } else {
+            res.status(401).json({ 
+                success: false, 
+                error: 'Неверный логин или пароль' 
+            });
+        }
+        
+    } catch (error) {
+        console.error('❌ Ошибка входа:', error.message);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Ошибка сервера при входе' 
+        });
+    }
 });
 
+// ==================== CRUD API ДЛЯ ИГР ====================
+
+// Получить все игры
 app.get('/api/games', (req, res) => {
     console.log('🛍️ Запрос списка игр');
+    
     try {
         const games = db.prepare(`
             SELECT g.*, u.login as owner_login 
@@ -1922,28 +1721,350 @@ app.get('/api/games', (req, res) => {
         });
     } catch (error) {
         console.error('❌ Ошибка получения игр:', error.message);
-        // Возвращаем тестовые данные
-        res.json({ 
-            success: true, 
-            games: [
-                { id: 1, name: 'Тестовая лягушка', description: 'Для тестирования', cost: 999, id_user: 1, owner_login: 'test@test.com' }
-            ],
-            count: 1
+        res.status(500).json({ 
+            success: false, 
+            error: 'Ошибка получения списка игр' 
         });
     }
 });
 
+// Получить конкретную игру по ID
+app.get('/api/games/:id', (req, res) => {
+    const gameId = req.params.id;
+    console.log(`📋 Запрос игры ID: ${gameId}`);
+    
+    try {
+        const game = db.prepare(`
+            SELECT g.*, u.login as owner_login 
+            FROM game g
+            LEFT JOIN User u ON g.id_user = u.id
+            WHERE g.id = ?
+        `).get(gameId);
+        
+        if (game) {
+            res.json({ 
+                success: true, 
+                game: game
+            });
+        } else {
+            res.status(404).json({ 
+                success: false, 
+                error: 'Игра не найдена' 
+            });
+        }
+    } catch (error) {
+        console.error('❌ Ошибка получения игры:', error.message);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Ошибка сервера при получении игры' 
+        });
+    }
+});
+
+// Добавить новую игру
+app.post('/api/games', (req, res) => {
+    console.log('➕ Запрос на добавление игры:', req.body);
+    
+    try {
+        const { name, cost, picture, userId } = req.body;
+        
+        // Валидация
+        if (!name || !cost) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Требуется название и цена' 
+            });
+        }
+        
+        if (isNaN(cost) || cost < 0) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Цена должна быть положительным числом' 
+            });
+        }
+        
+        // Проверяем пользователя
+        const user = db.prepare('SELECT * FROM User WHERE id = ?').get(userId);
+        if (!user) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Пользователь не найден' 
+            });
+        }
+        
+        // Добавляем игру (БЕЗ description)
+        const result = db.prepare(`
+            INSERT INTO game (id_user, name, cost, picture) 
+            VALUES (?, ?, ?, ?)
+        `).run(userId, name, parseFloat(cost), picture || 'default-frog.jpg');
+        
+        // Получаем добавленную игру
+        const newGame = db.prepare(`
+            SELECT g.*, u.login as owner_login 
+            FROM game g
+            LEFT JOIN User u ON g.id_user = u.id
+            WHERE g.id = ?
+        `).get(result.lastInsertRowid);
+        
+        console.log(`✅ Игра добавлена, ID: ${result.lastInsertRowid}`);
+        
+        res.json({ 
+            success: true, 
+            game: newGame,
+            message: 'Игра успешно добавлена!'
+        });
+        
+    } catch (error) {
+        console.error('❌ Ошибка добавления игры:', error.message);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Ошибка сервера при добавлении игры' 
+        });
+    }
+});
+
+// Обновить игру
+app.put('/api/games/:id', (req, res) => {
+    const gameId = req.params.id;
+    console.log(`✏️ Обновление игры ID: ${gameId}`, req.body);
+    
+    try {
+        const { name, cost, userId } = req.body; // БЕЗ description
+        
+        // Проверяем обязательные поля
+        if (!userId) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Требуется userId для обновления игры' 
+            });
+        }
+        
+        // Проверяем существование игры
+        const game = db.prepare('SELECT * FROM game WHERE id = ?').get(gameId);
+        if (!game) {
+            console.log(`❌ Игра ID ${gameId} не найдена в базе`);
+            return res.status(404).json({ 
+                success: false, 
+                error: 'Игра не найдена' 
+            });
+        }
+        
+        console.log(`📊 Найдена игра:`, game);
+        
+        // Проверяем пользователя
+        const user = db.prepare('SELECT * FROM User WHERE id = ?').get(userId);
+        if (!user) {
+            console.log(`❌ Пользователь ID ${userId} не найден`);
+            return res.status(401).json({ 
+                success: false, 
+                error: 'Пользователь не найден' 
+            });
+        }
+        
+        console.log(`👤 Найден пользователь:`, { id: user.id, login: user.login, role: user.role });
+        
+        // Проверяем права: владелец или админ
+        const isOwner = game.id_user == userId;
+        const isAdmin = user.role === 'admin';
+        
+        console.log(`🔐 Права доступа: isOwner=${isOwner}, isAdmin=${isAdmin}`);
+        
+        if (!isOwner && !isAdmin) {
+            console.log(`❌ Нет прав доступа. Владелец игры: ${game.id_user}, запрос от: ${userId}`);
+            return res.status(403).json({ 
+                success: false, 
+                error: 'Нет прав на редактирование этой игры' 
+            });
+        }
+        
+        // Подготавливаем данные для обновления (БЕЗ description)
+        const updateData = {
+            name: name || game.name,
+            cost: cost !== undefined ? parseFloat(cost) : game.cost
+        };
+        
+        console.log(`📝 Данные для обновления:`, updateData);
+        
+        // Обновляем игру (БЕЗ description)
+        const stmt = db.prepare(`
+            UPDATE game 
+            SET name = ?, cost = ? 
+            WHERE id = ?
+        `);
+        
+        const result = stmt.run(
+            updateData.name,
+            updateData.cost,
+            gameId
+        );
+        
+        console.log(`✅ Игра обновлена. Изменено строк: ${result.changes}`);
+        
+        // Получаем обновленную игру
+        const updatedGame = db.prepare(`
+            SELECT g.*, u.login as owner_login 
+            FROM game g
+            LEFT JOIN User u ON g.id_user = u.id
+            WHERE g.id = ?
+        `).get(gameId);
+        
+        console.log(`🎮 Обновленная игра:`, updatedGame);
+        
+        res.json({ 
+            success: true, 
+            game: updatedGame,
+            message: 'Игра успешно обновлена'
+        });
+        
+    } catch (error) {
+        console.error('❌ КРИТИЧЕСКАЯ ОШИБКА при обновлении игры:');
+        console.error('Сообщение:', error.message);
+        console.error('Стек ошибки:', error.stack);
+        
+        res.status(500).json({ 
+            success: false, 
+            error: 'Ошибка сервера при обновлении игры',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+// Удалить игру
+app.delete('/api/games/:id', (req, res) => {
+    const gameId = req.params.id;
+    console.log(`🗑️ Удаление игры ID: ${gameId}`, req.body);
+    
+    try {
+        const { userId, isAdmin = false } = req.body;
+        
+        // Проверяем существование игры
+        const game = db.prepare('SELECT * FROM game WHERE id = ?').get(gameId);
+        if (!game) {
+            return res.status(404).json({ 
+                success: false, 
+                error: 'Игра не найдена' 
+            });
+        }
+        
+        // Проверяем пользователя
+        const user = db.prepare('SELECT * FROM User WHERE id = ?').get(userId);
+        if (!user) {
+            return res.status(401).json({ 
+                success: false, 
+                error: 'Пользователь не найден' 
+            });
+        }
+        
+        // Проверяем права: владелец или админ
+        const canDelete = (game.id_user === userId) || (isAdmin && user.role === 'admin');
+        
+        if (!canDelete) {
+            return res.status(403).json({ 
+                success: false, 
+                error: 'Нет прав на удаление этой игры' 
+            });
+        }
+        
+        // Удаляем игру
+        db.prepare('DELETE FROM game WHERE id = ?').run(gameId);
+        
+        console.log(`✅ Игра ID: ${gameId} удалена`);
+        
+        res.json({ 
+            success: true,
+            message: 'Игра успешно удалена'
+        });
+        
+    } catch (error) {
+        console.error('❌ Ошибка удаления игры:', error.message);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Ошибка сервера при удалении игры' 
+        });
+    }
+});
+
+// Получить игры пользователя
+app.get('/api/user/:id/games', (req, res) => {
+    const userId = req.params.id;
+    console.log(`👤 Запрос игр пользователя ID: ${userId}`);
+    
+    try {
+        const games = db.prepare(`
+            SELECT g.*, u.login as owner_login 
+            FROM game g
+            LEFT JOIN User u ON g.id_user = u.id
+            WHERE g.id_user = ?
+            ORDER BY g.id DESC
+        `).all(userId);
+        
+        res.json({ 
+            success: true, 
+            games: games,
+            count: games.length
+        });
+        
+    } catch (error) {
+        console.error('❌ Ошибка получения игр пользователя:', error.message);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Ошибка сервера при получении игр пользователя' 
+        });
+    }
+});
+
+// Endpoint для проверки конкретной игры
+app.get('/api/debug/game/:id', (req, res) => {
+    const gameId = req.params.id;
+    
+    try {
+        const game = db.prepare('SELECT * FROM game WHERE id = ?').get(gameId);
+        const user = game ? db.prepare('SELECT * FROM User WHERE id = ?').get(game.id_user) : null;
+        
+        res.json({
+            game: game,
+            owner: user,
+            allGames: db.prepare('SELECT id, name, id_user FROM game ORDER BY id').all(),
+            allUsers: db.prepare('SELECT id, login, role FROM User ORDER BY id').all()
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Тестовый endpoint
+app.get('/api/test', (req, res) => {
+    console.log('✅ Запрос /api/test получен');
+    res.json({ 
+        success: true,
+        message: 'Сервер работает! 🐸',
+        time: new Date().toLocaleString('ru-RU'),
+        endpoints: [
+            'POST /api/register - регистрация',
+            'POST /api/login - вход',
+            'GET  /api/games - все игры',
+            'POST /api/games - добавить игру',
+            'PUT  /api/games/:id - обновить игру',
+            'DELETE /api/games/:id - удалить игру',
+            'GET  /api/user/:id/games - игры пользователя'
+        ]
+    });
+});
+
 // ==================== ЗАПУСК СЕРВЕРА ====================
 app.listen(PORT, () => {
-    console.log('\n==========================================');
+    console.log('\n' + '='.repeat(50));
     console.log('🚀 Сервер запущен!');
     console.log(`🌐 Адрес: http://localhost:${PORT}`);
     console.log('\n📋 Доступные API:');
     console.log(`   GET  http://localhost:${PORT}/api/test`);
+    console.log(`   POST http://localhost:${PORT}/api/register`);
+    console.log(`   POST http://localhost:${PORT}/api/login`);
+    console.log(`   GET  http://localhost:${PORT}/api/games`);
     console.log(`   POST http://localhost:${PORT}/api/games (добавить игру)`);
-    console.log(`   GET  http://localhost:${PORT}/api/games (список игр)`);
-    console.log(`   POST http://localhost:${PORT}/api/login (вход)`);
-    console.log('==========================================\n');
+    console.log(`   PUT  http://localhost:${PORT}/api/games/:id (обновить игру)`);
+    console.log(`   DELETE http://localhost:${PORT}/api/games/:id (удалить игру)`);
+    console.log('='.repeat(50) + '\n');
     
     // Проверяем базу данных
     console.log('🔍 Проверка базы данных:');
@@ -1952,18 +2073,52 @@ app.listen(PORT, () => {
         console.log('📊 Таблицы в БД:', tables.map(t => t.name).join(', '));
         
         tables.forEach(table => {
-            const count = db.prepare(`SELECT COUNT(*) as count FROM ${table}`).get().count;
-            console.log(`   ${table}: ${count} записей`);
+            try {
+                const count = db.prepare(`SELECT COUNT(*) as count FROM "${table.name}"`).get().count;
+                console.log(`   ${table.name}: ${count} записей`);
+            } catch (countError) {
+                console.log(`   ${table.name}: ошибка при подсчете - ${countError.message}`);
+            }
         });
+        
+        // Проверяем пользователей
+        console.log('\n👥 Пользователи в системе:');
+        try {
+            const users = db.prepare('SELECT id, login, role FROM User ORDER BY id').all();
+            users.forEach(user => {
+                console.log(`   ${user.login} (ID: ${user.id}, роль: ${user.role})`);
+            });
+        } catch (userError) {
+            console.log('   Ошибка при получении пользователей:', userError.message);
+        }
+        
+        // Проверяем игры
+        console.log('\n🛍️ Игры в магазине:');
+        try {
+            const games = db.prepare('SELECT COUNT(*) as count FROM game').get();
+            console.log(`   Всего игр: ${games.count}`);
+            
+            if (games.count > 0) {
+                const sampleGames = db.prepare('SELECT id, name, cost, id_user FROM game LIMIT 3').all();
+                sampleGames.forEach(game => {
+                    console.log(`   - ${game.name} (ID: ${game.id}, цена: ${game.cost} ₽, владелец: ${game.id_user})`);
+                });
+                if (games.count > 3) console.log(`   ... и еще ${games.count - 3} игр`);
+            }
+        } catch (gameError) {
+            console.log('   Ошибка при получении игр:', gameError.message);
+        }
+        
     } catch (error) {
         console.log('❌ Ошибка проверки БД:', error.message);
+        console.log('Стек ошибки:', error.stack);
     }
 });
 ```
 
 ---
 
-### 6. `shop.js`
+### 5. `shop.js`
 **Расположение:** `js/shop.js`
 
 **Назначение:** Динамическая загрузка товаров в магазине
@@ -1977,11 +2132,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const API_URL = 'http://localhost:3000/api';
     const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
     
-    // Пагинация
-    let currentPage = 1;
+    // Пагинация - делаем переменные доступными глобально
+    window.currentPage = 1;
     const itemsPerPage = 6;
-    let totalGames = 0;
-    let allGames = [];
+    window.totalGames = 0;
+    window.allGames = [];
     
     // Создаем контейнер для пагинации
     const paginationContainer = document.createElement('div');
@@ -2021,8 +2176,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (data.success) {
                 console.log(`✅ Загружено ${data.games.length} игр`);
-                allGames = data.games;
-                totalGames = data.games.length;
+                window.allGames = data.games;
+                window.totalGames = data.games.length;
                 
                 // Обновляем панель админа
                 updateAdminPanel();
@@ -2048,7 +2203,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function displayCurrentPage() {
-        if (allGames.length === 0) {
+        if (window.allGames.length === 0) {
             cardsContainer.innerHTML = `
                 <div class="col-12 text-center py-5">
                     <h3 class="text-muted">😔 Пока нет игрушек в магазине</h3>
@@ -2059,9 +2214,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Вычисляем какие игры показывать
-        const startIndex = (currentPage - 1) * itemsPerPage;
+        const startIndex = (window.currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        const gamesToShow = allGames.slice(startIndex, endIndex);
+        const gamesToShow = window.allGames.slice(startIndex, endIndex);
         
         // Очищаем контейнер
         cardsContainer.innerHTML = '';
@@ -2077,7 +2232,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function renderPagination() {
-        const totalPages = Math.ceil(totalGames / itemsPerPage);
+        const totalPages = Math.ceil(window.totalGames / itemsPerPage);
         
         if (totalPages <= 1) {
             paginationContainer.innerHTML = '';
@@ -2091,8 +2246,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Кнопка "Назад"
         paginationHTML += `
-            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                <button class="page-link" onclick="changePage(${currentPage - 1})">
+            <li class="page-item ${window.currentPage === 1 ? 'disabled' : ''}">
+                <button class="page-link" onclick="window.changePage(${window.currentPage - 1})">
                     &laquo; Назад
                 </button>
             </li>
@@ -2100,23 +2255,23 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Номера страниц
         for (let i = 1; i <= totalPages; i++) {
-            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+            if (i === 1 || i === totalPages || (i >= window.currentPage - 1 && i <= window.currentPage + 1)) {
                 paginationHTML += `
-                    <li class="page-item ${i === currentPage ? 'active' : ''}">
-                        <button class="page-link" onclick="changePage(${i})">
+                    <li class="page-item ${i === window.currentPage ? 'active' : ''}">
+                        <button class="page-link" onclick="window.changePage(${i})">
                             ${i}
                         </button>
                     </li>
                 `;
-            } else if (i === currentPage - 2 || i === currentPage + 2) {
+            } else if (i === window.currentPage - 2 || i === window.currentPage + 2) {
                 paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
             }
         }
         
         // Кнопка "Вперед"
         paginationHTML += `
-            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                <button class="page-link" onclick="changePage(${currentPage + 1})">
+            <li class="page-item ${window.currentPage === totalPages ? 'disabled' : ''}">
+                <button class="page-link" onclick="window.changePage(${window.currentPage + 1})">
                     Вперед &raquo;
                 </button>
             </li>
@@ -2126,7 +2281,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </ul>
             </nav>
             <div class="text-center text-muted mt-2">
-                Страница ${currentPage} из ${totalPages} • ${totalGames} товаров
+                Страница ${window.currentPage} из ${totalPages} • ${window.totalGames} товаров
             </div>
         `;
         
@@ -2170,7 +2325,7 @@ document.addEventListener('DOMContentLoaded', function() {
             imageSrc += 'default-frog.jpg';
         }
         
-        // Создаем карточку
+        // Создаем карточку (БЕЗ description)
         cardDiv.innerHTML = `
             <div class="position-relative">
                 <img src="${imageSrc}" 
@@ -2197,10 +2352,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <span class="badge bg-success">В наличии</span>
                     <small class="text-muted ms-2">Владелец: ${game.owner_login || 'Неизвестно'}</small>
                 </div>
-                
-                <p class="card-text" style="height: 60px; overflow: hidden; text-overflow: ellipsis;">
-                    ${game.description || 'Мягкая игрушка лягушка. Отличный подарок!'}
-                </p>
                 
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <h5 class="text-success mb-0">${formattedPrice}</h5>
@@ -2333,14 +2484,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <input type="text" class="form-control" id="game-name" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Описание</label>
-                                    <textarea class="form-control" id="game-description" rows="3" 
-                                              placeholder="Опишите ваш товар..."></textarea>
-                                </div>
-                                <div class="mb-3">
                                     <label class="form-label">Цена (₽) *</label>
                                     <input type="number" class="form-control" id="game-price" 
-                                           min="0" value="1000" required>
+                                           min="0" step="0.01" value="1000" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Имя файла картинки</label>
@@ -2380,12 +2526,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Обработчик отправки формы
         document.getElementById('submit-add-game').onclick = async function() {
+            const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+            if (!currentUser) {
+                alert('❌ Сначала войдите в систему!');
+                return;
+            }
+            
             const gameData = {
                 name: document.getElementById('game-name').value.trim(),
-                description: document.getElementById('game-description').value.trim(),
-                cost: parseInt(document.getElementById('game-price').value),
+                cost: parseFloat(document.getElementById('game-price').value),
                 picture: document.getElementById('game-image').value.trim() || 'default-frog.jpg',
-                userId: currentUser ? currentUser.id : 1
+                userId: currentUser.id
             };
             
             // Валидация
@@ -2430,7 +2581,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } catch (error) {
                 alert('❌ Ошибка при добавлении товара');
-                console.error(error);
+                console.error('Детали ошибки:', error);
                 this.disabled = false;
                 this.textContent = 'Добавить товар';
             }
@@ -2490,13 +2641,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     async function editGame(gameId) {
-        const game = allGames.find(g => g.id == gameId);
+        const game = window.allGames.find(g => g.id == gameId);
         if (!game) return;
+        
+        const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+        if (!currentUser) {
+            alert('❌ Сначала войдите в систему!');
+            window.location.href = './login.html';
+            return;
+        }
+        
+        console.log('🔄 Редактирование игры:', { gameId, currentUser });
         
         const newName = prompt('Введите новое название:', game.name);
         if (!newName) return;
         
-        const newDescription = prompt('Введите новое описание:', game.description || '');
         const newPrice = prompt('Введите новую цену:', game.cost);
         
         if (!newPrice || isNaN(newPrice) || newPrice < 0) {
@@ -2504,21 +2663,27 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        const requestData = {
+            name: newName,
+            cost: parseFloat(newPrice),
+            userId: currentUser.id
+        };
+        
+        console.log('📤 Отправляемые данные:', requestData);
+        
         try {
             const response = await fetch(`${API_URL}/games/${gameId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    name: newName,
-                    description: newDescription,
-                    cost: parseInt(newPrice),
-                    userId: currentUser.id
-                })
+                body: JSON.stringify(requestData)
             });
             
+            console.log('📥 Ответ сервера:', response.status, response.statusText);
+            
             const result = await response.json();
+            console.log('📋 Данные ответа:', result);
             
             if (result.success) {
                 alert('✅ Товар обновлен!');
@@ -2527,14 +2692,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(`❌ Ошибка: ${result.error}`);
             }
         } catch (error) {
-            alert('❌ Ошибка при обновлении товара');
-            console.error(error);
+            console.error('❌ Ошибка при обновлении товара:', error);
+            alert('❌ Ошибка при обновлении товара. Проверьте консоль для деталей.');
         }
     }
     
     async function deleteGame(gameId, isAdmin = false) {
-        const game = allGames.find(g => g.id == gameId);
+        const game = window.allGames.find(g => g.id == gameId);
         if (!game) return;
+        
+        const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+        if (!currentUser) {
+            alert('❌ Сначала войдите в систему!');
+            window.location.href = './login.html';
+            return;
+        }
         
         const confirmMessage = isAdmin 
             ? `Вы администратор. Удалить товар "${game.name}" (ID: ${gameId})?`
@@ -2563,8 +2735,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(`❌ Ошибка: ${result.error}`);
             }
         } catch (error) {
-            alert('❌ Ошибка при удалении товара');
-            console.error(error);
+            console.error('❌ Ошибка при удалении товара:', error);
+            alert('❌ Ошибка при удалении товара. Проверьте консоль для деталей.');
         }
     }
     
@@ -2584,17 +2756,364 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Глобальная функция для пагинации
 window.changePage = function(page) {
-    console.log('changePage called:', page);
-    const event = new CustomEvent('pageChange', { detail: { page } });
-    window.dispatchEvent(event);
+    console.log('🔄 changePage вызвана:', page);
+    
+    // Получаем контейнеры
+    const cardsContainer = document.getElementById('cards-net');
+    const paginationContainer = document.querySelector('.pagination-container');
+    
+    if (!cardsContainer || !paginationContainer) {
+        console.error('❌ Не найдены элементы пагинации');
+        return;
+    }
+    
+    // Получаем данные
+    const allGames = window.allGames || [];
+    const itemsPerPage = 6;
+    const totalGames = allGames.length;
+    const totalPages = Math.ceil(totalGames / itemsPerPage);
+    
+    // Проверяем валидность страницы
+    if (page < 1 || page > totalPages) {
+        console.warn(`⚠️ Страница ${page} вне диапазона (1-${totalPages})`);
+        return;
+    }
+    
+    // Обновляем текущую страницу
+    window.currentPage = page;
+    
+    // Вычисляем какие игры показывать
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const gamesToShow = allGames.slice(startIndex, endIndex);
+    
+    // Очищаем контейнер
+    cardsContainer.innerHTML = '';
+    
+    // Создаем карточки
+    gamesToShow.forEach(game => {
+        const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+        const isOwner = currentUser && game.id_user === currentUser.id;
+        const isAdmin = currentUser && currentUser.role === 'admin';
+        
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'card mb-4';
+        cardDiv.style.width = '280px';
+        cardDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+        cardDiv.style.transition = 'all 0.3s ease';
+        cardDiv.dataset.gameId = game.id;
+        
+        cardDiv.addEventListener('mouseenter', () => {
+            cardDiv.style.transform = 'translateY(-5px)';
+            cardDiv.style.boxShadow = '0 10px 20px rgba(0,0,0,0.15)';
+        });
+        
+        cardDiv.addEventListener('mouseleave', () => {
+            cardDiv.style.transform = 'translateY(0)';
+            cardDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+        });
+        
+        // Форматируем цену
+        const formattedPrice = new Intl.NumberFormat('ru-RU', {
+            style: 'currency',
+            currency: 'RUB',
+            minimumFractionDigits: 0
+        }).format(game.cost);
+        
+        let imageSrc = './assets/images/cards/';
+        if (game.picture && game.picture.trim() !== '') {
+            imageSrc += game.picture;
+        } else {
+            imageSrc += 'default-frog.jpg';
+        }
+        
+        // Создаем карточку
+        cardDiv.innerHTML = `
+            <div class="position-relative">
+                <img src="${imageSrc}" 
+                     class="card-img-top" 
+                     alt="${game.name}"
+                     style="height: 200px; object-fit: cover;"
+                     onerror="this.onerror=null; this.src='./assets/images/cards/default-frog.jpg'">
+                
+                ${isOwner ? 
+                    '<span class="position-absolute top-0 start-0 badge bg-info m-2">Ваша</span>' : 
+                    ''}
+                ${isAdmin ? 
+                    '<span class="position-absolute top-0 end-0 badge bg-warning text-dark m-2">Админ</span>' : 
+                    ''}
+            </div>
+            
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title mb-0" style="max-width: 70%;">${game.name}</h5>
+                    <span class="badge bg-secondary">ID: ${game.id}</span>
+                </div>
+                
+                <div class="mb-2">
+                    <span class="badge bg-success">В наличии</span>
+                    <small class="text-muted ms-2">Владелец: ${game.owner_login || 'Неизвестно'}</small>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <h5 class="text-success mb-0">${formattedPrice}</h5>
+                    <button class="btn btn-primary add-to-cart-btn" 
+                            data-game-id="${game.id}">
+                        🛒 В корзину
+                    </button>
+                </div>
+                
+                ${isOwner || isAdmin ? `
+                <div class="btn-group w-100 mt-3">
+                    ${isOwner ? `
+                    <button class="btn btn-sm btn-outline-warning edit-game-btn" 
+                            data-game-id="${game.id}">
+                        ✏️ Редактировать
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger delete-game-btn" 
+                            data-game-id="${game.id}">
+                        🗑️ Удалить
+                    </button>
+                    ` : ''}
+                    ${isAdmin && !isOwner ? `
+                    <button class="btn btn-sm btn-outline-danger delete-game-btn" 
+                            data-game-id="${game.id}">
+                        🗑️ Удалить (админ)
+                    </button>
+                    ` : ''}
+                </div>
+                ` : ''}
+            </div>
+        `;
+        
+        // Добавляем обработчики для кнопок в новой карточке
+        const addToCartBtn = cardDiv.querySelector('.add-to-cart-btn');
+        if (addToCartBtn) {
+            addToCartBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const gameId = this.getAttribute('data-game-id');
+                const button = this;
+                
+                const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+                if (!currentUser) {
+                    alert('❌ Сначала войдите в систему!');
+                    window.location.href = './login.html';
+                    return;
+                }
+                
+                const originalText = button.innerHTML;
+                const originalClass = button.className;
+                
+                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+                button.className = 'btn btn-secondary';
+                button.disabled = true;
+                
+                setTimeout(() => {
+                    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                    
+                    if (cart.includes(gameId.toString())) {
+                        button.innerHTML = '✅ Уже в корзине';
+                    } else {
+                        cart.push(gameId.toString());
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        button.innerHTML = '✅ Добавлено!';
+                        
+                        // Обновляем счетчик корзины
+                        const cartCount = document.querySelector('#cart-count');
+                        if (cartCount) {
+                            cartCount.textContent = cart.length;
+                            cartCount.classList.toggle('d-none', cart.length === 0);
+                        }
+                    }
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.className = originalClass;
+                        button.disabled = false;
+                    }, 1500);
+                }, 800);
+            });
+        }
+        
+        // Обработчики для кнопок редактирования/удаления
+        const editBtn = cardDiv.querySelector('.edit-game-btn');
+        if (editBtn) {
+            editBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const gameId = this.getAttribute('data-game-id');
+                window.editGame(gameId);
+            });
+        }
+        
+        const deleteBtn = cardDiv.querySelector('.delete-game-btn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const gameId = this.getAttribute('data-game-id');
+                const isAdmin = this.textContent.includes('админ');
+                window.deleteGame(gameId, isAdmin);
+            });
+        }
+        
+        cardsContainer.appendChild(cardDiv);
+    });
+    
+    // Обновляем пагинацию
+    let paginationHTML = `
+        <nav aria-label="Навигация по страницам">
+            <ul class="pagination justify-content-center">
+    `;
+    
+    // Кнопка "Назад"
+    paginationHTML += `
+        <li class="page-item ${page === 1 ? 'disabled' : ''}">
+            <button class="page-link" onclick="window.changePage(${page - 1})">
+                &laquo; Назад
+            </button>
+        </li>
+    `;
+    
+    // Номера страниц
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= page - 1 && i <= page + 1)) {
+            paginationHTML += `
+                <li class="page-item ${i === page ? 'active' : ''}">
+                    <button class="page-link" onclick="window.changePage(${i})">
+                        ${i}
+                    </button>
+                </li>
+            `;
+        } else if (i === page - 2 || i === page + 2) {
+            paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        }
+    }
+    
+    // Кнопка "Вперед"
+    paginationHTML += `
+        <li class="page-item ${page === totalPages ? 'disabled' : ''}">
+            <button class="page-link" onclick="window.changePage(${page + 1})">
+                Вперед &raquo;
+            </button>
+        </li>
+    `;
+    
+    paginationHTML += `
+            </ul>
+        </nav>
+        <div class="text-center text-muted mt-2">
+            Страница ${page} из ${totalPages} • ${totalGames} товаров
+        </div>
+    `;
+    
+    paginationContainer.innerHTML = paginationHTML;
+    
+    console.log(`✅ Страница ${page} загружена, показано ${gamesToShow.length} игр`);
 };
 
-// Обработчик изменения страницы
-window.addEventListener('pageChange', function(e) {
-    if (typeof changePageInternal === 'function') {
-        changePageInternal(e.detail.page);
+// Делаем функции доступными глобально для пагинации
+window.editGame = async function(gameId) {
+    const allGames = window.allGames || [];
+    const game = allGames.find(g => g.id == gameId);
+    if (!game) return;
+    
+    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+    if (!currentUser) {
+        alert('❌ Сначала войдите в систему!');
+        window.location.href = './login.html';
+        return;
     }
-});
+    
+    console.log('🔄 Редактирование игры (глобальная):', { gameId, currentUser });
+    
+    const newName = prompt('Введите новое название:', game.name);
+    if (!newName) return;
+    
+    const newPrice = prompt('Введите новую цену:', game.cost);
+    
+    if (!newPrice || isNaN(newPrice) || newPrice < 0) {
+        alert('Цена должна быть числом больше 0!');
+        return;
+    }
+    
+    const requestData = {
+        name: newName,
+        cost: parseFloat(newPrice),
+        userId: currentUser.id
+    };
+    
+    console.log('📤 Отправляемые данные:', requestData);
+    
+    try {
+        const response = await fetch('http://localhost:3000/api/games/' + gameId, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+        
+        console.log('📥 Ответ сервера:', response.status, response.statusText);
+        
+        const result = await response.json();
+        console.log('📋 Данные ответа:', result);
+        
+        if (result.success) {
+            alert('✅ Товар обновлен!');
+            // Перезагружаем страницу для обновления списка
+            location.reload();
+        } else {
+            alert(`❌ Ошибка: ${result.error}`);
+        }
+    } catch (error) {
+        console.error('❌ Ошибка при обновлении товара:', error);
+        alert('❌ Ошибка при обновлении товара. Проверьте консоль для деталей.');
+    }
+};
+
+window.deleteGame = async function(gameId, isAdmin = false) {
+    const allGames = window.allGames || [];
+    const game = allGames.find(g => g.id == gameId);
+    if (!game) return;
+    
+    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+    if (!currentUser) {
+        alert('❌ Сначала войдите в систему!');
+        window.location.href = './login.html';
+        return;
+    }
+    
+    const confirmMessage = isAdmin 
+        ? `Вы администратор. Удалить товар "${game.name}" (ID: ${gameId})?`
+        : `Удалить ваш товар "${game.name}"?`;
+    
+    if (!confirm(confirmMessage)) return;
+    
+    try {
+        const response = await fetch('http://localhost:3000/api/games/' + gameId, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: currentUser.id,
+                isAdmin: isAdmin
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('✅ Товар удален!');
+            // Перезагружаем страницу для обновления списка
+            location.reload();
+        } else {
+            alert(`❌ Ошибка: ${result.error}`);
+        }
+    } catch (error) {
+        console.error('❌ Ошибка при удалении товара:', error);
+        alert('❌ Ошибка при удалении товара. Проверьте консоль для деталей.');
+    }
+};
 ```
 
 ---
@@ -2605,7 +3124,7 @@ window.addEventListener('pageChange', function(e) {
 
 **Тип:** SQLite база данных
 
-**Размер:** 16.00 КБ
+**Размер:** 20.00 КБ
 
 **Содержимое:** *Бинарный файл SQLite*
 
@@ -2655,11 +3174,11 @@ frog-site/
 |-----------|------------|------------|
 | CSS | 1 | 206 |
 | HTML | 6 | 521 |
-| JavaScript | 6 | 1,726 |
-| **Итого** | **13** | **2,453** |
+| JavaScript | 5 | 2,255 |
+| **Итого** | **12** | **2,982** |
 
 ### Общий размер кода:
-- **81.9 КБ**
+- **99.7 КБ**
 - **+ база данных SQLite**
 
 ### Детали по файлам:
@@ -2667,16 +3186,15 @@ frog-site/
 |------|-----|--------|-------|
 | 404.html | HTML | 0.2 КБ | 11 |
 | auth-header.js | JavaScript | 2.1 КБ | 68 |
-| backend.js | JavaScript | 4.9 КБ | 168 |
 | basket.html | HTML | 6.0 КБ | 165 |
 | basket.js | JavaScript | 14.4 КБ | 421 |
 | index.html | HTML | 4.3 КБ | 111 |
 | log-reg.js | JavaScript | 4.0 КБ | 150 |
 | login.html | HTML | 3.2 КБ | 83 |
 | register.html | HTML | 3.2 КБ | 82 |
-| server.js | JavaScript | 10.4 КБ | 293 |
+| server.js | JavaScript | 19.8 КБ | 626 |
 | shop.html | HTML | 2.4 КБ | 69 |
-| shop.js | JavaScript | 23.4 КБ | 626 |
+| shop.js | JavaScript | 36.6 КБ | 990 |
 | style.css | CSS | 3.5 КБ | 206 |
 
 ---
